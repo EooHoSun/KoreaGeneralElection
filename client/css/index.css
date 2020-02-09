@@ -17,39 +17,38 @@ body {
 
 /* 헤더 */
 #v-header {
-	/* padding: 10px; */
-	text-align: center;
-	background-color: black;
+	padding: 16px;
+	box-sizing: border-box;
 }
 .v-header-top {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	/* justify-content: space-between; */
-	/* margin-bottom: 10px; */
-	display: inline-block;
-	color: white;
 }
 .v-title {
 	display: flex;
 	align-items: center;
+	margin-bottom: 8px;
 }
 .v-title h1 {
-	font-size: 35px;
+	font-size: 32px;
+	margin: 0;
 }
 .v-title-logo {
 	background: url('../img/vote.png') no-repeat center center;
-	background-size: 60px 60px;
-	width: 60px;
-	height: 60px;
-	margin-right: 10px;
+	background-size: 48px 48px;
+	width: 48px;
+	height: 48px;
+	margin-right: 16px;
 }
 .v-header-timer {
-	font-size: 30px;
+	font-size: 24px;
 }
 
 /* 컨텐츠 */
 #v-content {
 	flex-grow: 1;
+	flex-shrink: 0;
 	position: relative;
 }
 #v-map {
