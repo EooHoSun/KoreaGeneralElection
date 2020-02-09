@@ -4,6 +4,9 @@ import axios from 'axios'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import markerIcon from '../img/marker.png'
 
+/**
+ * 정당 & 레이어 색상
+ */
 const PARTY_COLOR = [
 	{ party: '더불어민주당', color: '#1870B9' },
 	{ party: '새누리당', color: '#C9151E' },
@@ -21,14 +24,13 @@ const PARTY_COLOR = [
 function VoteMap(mapId) {
 	this.map = {}
 	this.mapId = mapId
-	this.overlayLayers = {}
+	this.markers = {}
 }
 
 /**
- * init map
+ * init VoteMap
  */
 VoteMap.prototype.init = async function init() {
-	const self = this
 	const zoom = 7 // init zoom
 	const center = L.latLng(36.1358642, 128.0785804) // init center
 
@@ -37,12 +39,28 @@ VoteMap.prototype.init = async function init() {
 		attribution: `&copy; <a target="_blank" href="https://maps.google.com/maps?ll=${center.lat},${center.lng}&amp;z=13&amp;t=m&amp;hl=ko-KR&amp;gl=US&amp;mapclient=apiv3" title="Google 지도에서 이 지역을 보려면 클릭하세요." ><img alt="" src="https://maps.gstatic.com/mapfiles/api-3/images/google4.png" draggable="false"></a>`,
 	})
 
+	// leaflet map 생성
 	this.map = L.map(this.mapId, {
 		center,
 		zoom,
 		minZoom: 6,
 		layers: googleMap,
 	})
+
+	// 내위치찾기 버튼 생성
+	this._createGeolocButton()
+
+	// 20대 선거구 그리기
+	await this._drawElect20Layer()
+
+	return this.map
+}
+
+/**
+ * 내위치찾기 버튼 생성
+ */
+VoteMap.prototype._createGeolocButton = function() {
+	const self = this
 
 	const locIcon = L.icon({
 		iconUrl: markerIcon,
@@ -55,36 +73,25 @@ VoteMap.prototype.init = async function init() {
 		.custom({
 			position: 'topleft',
 			content: '<button type="button" class="v-now-loc"></button>',
-			classes: 'outer-btn',
-			style: {
-				margin: '10px',
-				padding: '0px 0 0 0',
-				cursor: 'pointer',
-			},
 			events: {
-				click(data) {
-					console.log(data)
+				click() {
 					// 현재위치 표시X
-					if (
-						!self.overlayLayers.myloc ||
-						Object.keys(self.overlayLayers.myloc).length === 0
-					) {
+					if (!self.markers.myloc) {
 						// Geolocation 객체를 사용
 						if (navigator.geolocation) {
 							const options = {
 								enableHighAccuracy: true, // 정확한 값 : true, 대략적인 값 : false
 								timeout: 10000, // 10 초이상 기다리지 않음.
 							}
-
 							navigator.geolocation.getCurrentPosition(
-								function(position) {
-									self.overlayLayers.myloc = L.marker(
+								position => {
+									self.markers.myloc = L.marker(
 										[position.coords.latitude, position.coords.longitude],
 										{ icon: locIcon }
 									)
-									self.overlayLayers.myloc.addTo(self.map)
+									self.markers.myloc.addTo(self.map)
 								},
-								function(error) {
+								error => {
 									// 위치를 가져오는데 실패한 경우
 									console.log(error.message)
 								},
@@ -94,20 +101,19 @@ VoteMap.prototype.init = async function init() {
 							alert('위치 기반 서비스를 지원하지 않는 브라우저 입니다.')
 						}
 					} else {
-						self.map.removeLayer(self.overlayLayers.myloc)
-						self.overlayLayers.myloc = {}
+						self.map.removeLayer(self.markers.myloc)
+						delete self.markers.myloc
 					}
 				},
 			},
 		})
 		.addTo(this.map)
-
-	await this._makeGovLayer()
-
-	return this.map
 }
 
-VoteMap.prototype._makeGovLayer = async function _makeGovLayer() {
+/**
+ * 20대 선거구 그리기
+ */
+VoteMap.prototype._drawElect20Layer = async function() {
 	const { data } = await axios.get('/api/data?type=20')
 	L.geoJSON(data.geoJson, {
 		style(feature) {
@@ -132,7 +138,7 @@ VoteMap.prototype._makeGovLayer = async function _makeGovLayer() {
 					`<p><strong>당선당 : </strong>${elected.party}</p>`
 				)
 			},
-			{ opacity: 1, className: 'elected-tooltip' }
+			{ opacity: 1, className: 'v-elected-tooltip' }
 		)
 		.addTo(this.map)
 }

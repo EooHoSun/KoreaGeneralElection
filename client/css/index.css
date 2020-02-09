@@ -58,11 +58,24 @@ body {
 	height: 100%;
 	font-family: 'Noto Sans KR', sans-serif;
 }
-.elected-tooltip {
+.v-elected-tooltip {
 	font-size: 14px;
 }
-.elected-tooltip p {
+.v-elected-tooltip p {
 	margin: 0;
+}
+.v-now-loc {
+	border: 0;
+	border-radius: 4px;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+	background: #ffffff url('../img/location-icon.png') no-repeat center center;
+	background-size: 22px 22px;
+	width: 26px;
+	height: 26px;
+	cursor: pointer;
+}
+.v-now-loc:hover {
+	background-color: #f4f4f4;
 }
 
 .v-info {
@@ -78,10 +91,4 @@ body {
 .v-info p {
 	margin-top: 0;
 	margin-bottom: 0;
-}
-
-.v-now-loc {
-	background: url('../img/location-icon.png') no-repeat center center;
-	width: 40px;
-	height: 40px;
 }
