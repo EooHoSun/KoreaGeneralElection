@@ -3787,7 +3787,14 @@ leaflet-control-custom@^1.0.0:
   resolved "https://registry.yarnpkg.com/leaflet-control-custom/-/leaflet-control-custom-1.0.0.tgz#1841e9f16670fac5e63a088c79552a6cbcbee983"
   integrity sha512-Me7m9/lc/dArlu758vmTlhebVJe5UROtvfluvYdyGetmVTrasva8Airowc8FO7Pz8GM5WqZ8pbgqM8YSh9CcRw==
 
-leaflet@^1.6.0:
+leaflet-search@^2.9.8:
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/leaflet-search/-/leaflet-search-2.9.8.tgz#67adbd06016e67459e84a0493e946dd4384169b4"
+  integrity sha512-w/0qcllcNVzlfhup7apLc7hamOaZrtGfxMDqX6ItlUjNBz08CMk7bxcwITIVbL8wFYqTnVsBI8zUBKzypQo2uw==
+  dependencies:
+    leaflet "*"
+
+leaflet@*, leaflet@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.6.0.tgz#aecbb044b949ec29469eeb31c77a88e2f448f308"
   integrity sha512-CPkhyqWUKZKFJ6K8umN5/D2wrJ2+/8UIpXppY7QDnUZW5bZL5+SEI2J7GBpwh4LIupOKqbNSQXgqmrEJopHVNQ==
