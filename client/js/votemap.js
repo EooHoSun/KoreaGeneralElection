@@ -26,6 +26,8 @@ function VoteMap(mapId) {
 	this.map = {}
 	this.mapId = mapId
 	this.markers = {}
+	//hosun 0210 추가
+	this.hjd = {}
 }
 
 /**
@@ -35,6 +37,7 @@ VoteMap.prototype.init = async function init() {
 	const zoom = 7 // init zoom
 	const center = L.latLng(36.1358642, 128.0785804) // init center
 
+	this._setHJD();
 	// Google Map
 	const googleMap = L.tileLayer('https://mt0.google.com/vt/lyrs=m&hl=kr&x={x}&y={y}&z={z}', {
 		attribution: `&copy; <a target="_blank" href="https://maps.google.com/maps?ll=${center.lat},${center.lng}&amp;z=13&amp;t=m&amp;hl=ko-KR&amp;gl=US&amp;mapclient=apiv3" title="Google 지도에서 이 지역을 보려면 클릭하세요." ><img alt="" src="https://maps.gstatic.com/mapfiles/api-3/images/google4.png" draggable="false"></a>`,
@@ -147,13 +150,43 @@ VoteMap.prototype._drawElect20Layer = async function() {
 }
 
 
+
+//hosun 0210 추가
 /**
  * search box 만들기
  */
 VoteMap.prototype._setSearch = async function() {
-	const searchLayer = L.layerGroup().addTo(this.map);
-	this.map.addControl(new L.Control.Search({layer : searchLayer}));
-	console.log(new L.Control.Search());
+	L.control
+		.custom({
+			position: 'topleft',
+			content: '<button type="button" class="v-now-loc"></button>',
+			events : {
+				click(){
+					alert("zz");
+				}
+			}
+		});
+
+	new L.Control.Search({
+		layer : this.hjd,
+		position : "topleft"
+	}).addTo(this.map);
 
 }
+
+
+VoteMap.prototype._setHJD = async function(){
+	const {data, status} = await axios.get("/api/data?type=20");
+	if(status != 200) return;
+
+	this.hjd = L.geoJSON(data.geoJson, {
+		style : {
+			weight: 1,
+			color: "#00ff0000",
+		},
+	});
+	this.hjd.addTo(this.map);
+	console.log(this.hjd);
+}
+
 export default VoteMap

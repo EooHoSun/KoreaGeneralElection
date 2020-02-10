@@ -110,4 +110,6 @@ temp/
 
 backup/
 
+server/public/
+
 # End of https://www.gitignore.io/api/node
