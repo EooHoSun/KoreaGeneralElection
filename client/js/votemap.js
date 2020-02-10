@@ -85,7 +85,7 @@ VoteMap.prototype._createGeolocButton = function() {
 					if (!self.markers.myloc) {
 						// Geolocation 객체를 사용
 						if (navigator.geolocation) {
-							const options = {
+							const options = {	
 								enableHighAccuracy: true, // 정확한 값 : true, 대략적인 값 : false
 								timeout: 10000, // 10 초이상 기다리지 않음.
 							}
@@ -157,11 +157,41 @@ VoteMap.prototype._drawElect20Layer = async function() {
  */
 VoteMap.prototype._setSearch = async function() {
 
-	this.map.addControl(new L.Control.Search({
-		layer : this.hjd,
-		position : "bottomleft"
-	}));
 	
+	L.control.custom({
+		position: 'topleft',
+		content : '<div class="input-group">'+
+				  '    <input type="text" class="form-control input-sm" placeholder="Search">'+
+				  '    <span class="input-group-btn">'+
+				  '        <button class="btn btn-default btn-sm" type="button">Go!</button>'+
+				  '    </span>'+
+				  '</div>',
+		classes : '',
+		style   :
+		{
+			position: 'absolute',
+			left: '50px',
+			top: '0px',
+			width: '300px'
+		},
+		events: {
+			click : function(e){
+				console.log(e);
+			},
+			change : function(e){
+				console.log(e);
+			},
+			contextmenu : function(e){
+				console.log(e);
+			},
+			dbClick : function(e){
+				console.log(e);
+			}
+
+		}
+
+	})
+	.addTo(this.map);
 	
 
 }
