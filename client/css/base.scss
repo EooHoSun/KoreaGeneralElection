@@ -1,0 +1,65 @@
+@import '~normalize.css/normalize.css';
+
+// 폰트 추가
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500&display=swap&subset=korean');
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+}
+body {
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+// wrap
+#v-wrap {
+	min-height: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+// 헤더
+#v-header {
+	padding: 16px;
+	box-sizing: border-box;
+}
+.v-header-top {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.v-title {
+	display: flex;
+	align-items: center;
+	margin-bottom: 8px;
+	h1 {
+		font-size: 32px;
+		margin: 0;
+	}
+}
+.v-title-logo {
+	background: url('../img/vote.png') no-repeat center center;
+	background-size: 48px 48px;
+	width: 48px;
+	height: 48px;
+	margin-right: 16px;
+}
+.v-header-timer {
+	font-size: 24px;
+}
+
+// 컨텐츠
+#v-content {
+	flex-grow: 1;
+	flex-shrink: 0;
+	position: relative;
+}
+#v-map {
+	position: relative;
+	z-index: 0;
+	width: 100%;
+	height: 100%;
+	font-family: 'Noto Sans KR', sans-serif;
+}
