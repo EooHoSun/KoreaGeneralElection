@@ -39,6 +39,15 @@ module.exports = function(env) {
 							].filter(Boolean),
 						},
 						{
+							test: /\.(scss|sass)$/,
+							use: [
+								isProd && { loader: MiniCssExtractPlugin.loader },
+								!isProd && 'style-loader',
+								'css-loader',
+								'sass-loader',
+							].filter(Boolean),
+						},
+						{
 							test: /\.html$/i,
 							loader: 'html-loader',
 						},
