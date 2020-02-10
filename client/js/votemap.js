@@ -3,6 +3,7 @@ import * as L from 'leaflet'
 import axios from 'axios'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import markerIcon from '../img/marker.png'
+import search from 'leaflet-search';
 
 /**
  * 정당 & 레이어 색상
@@ -52,6 +53,8 @@ VoteMap.prototype.init = async function init() {
 
 	// 20대 선거구 그리기
 	await this._drawElect20Layer()
+
+	this._setSearch();
 
 	return this.map
 }
@@ -143,4 +146,14 @@ VoteMap.prototype._drawElect20Layer = async function() {
 		.addTo(this.map)
 }
 
+
+/**
+ * search box 만들기
+ */
+VoteMap.prototype._setSearch = async function() {
+	const searchLayer = L.layerGroup().addTo(this.map);
+	this.map.addControl(new L.Control.Search({layer : searchLayer}));
+	console.log(new L.Control.Search());
+
+}
 export default VoteMap
