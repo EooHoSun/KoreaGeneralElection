@@ -107,6 +107,7 @@ body {
     background-color: rgba( 255, 255, 255, 0.5 );
 }
 .row{display: table-row;}
+.row.header-row{text-align: center;}
 .cell {display: table-cell; padding: 3px; border-bottom: 1px solid #DDD;border-right: 1px solid #DDD;}
 .party-new-nuri{background-color: #C9151E;}
 .party-with-demo{background-color: #1870B9;}
