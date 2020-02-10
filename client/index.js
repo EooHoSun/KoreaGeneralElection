@@ -1,5 +1,4 @@
-import 'normalize.css/normalize.css'
-import './css/index.css'
+import './css/index.scss'
 
 import VoteMap from './js/votemap'
 import counter from './js/counter'
