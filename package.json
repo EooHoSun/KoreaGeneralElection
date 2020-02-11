@@ -8,8 +8,10 @@
 		"client:build": "webpack --env production",
 		"server:dev": "nodemon --watch server server/app.js",
 		"server:start": "cross-env NODE_ENV=production node server/app.js",
+		"server:startprod": "cross-env NODE_ENV=production forever start server/app.js",
 		"dev": "concurrently \"yarn server:dev\" \"yarn client:dev\"",
-		"start": "yarn client:build && yarn server:start"
+		"start": "yarn client:build && yarn server:start",
+		"start:prod": "yarn client:build && yarn server:startprod"
 	},
 	"author": "",
 	"license": "ISC",
