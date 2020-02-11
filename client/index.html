@@ -19,89 +19,99 @@
 				<div id="v-menu-toggle" class="v-menu-toggle">
 					<i class="fas fa-bars btn-menu-toggle"></i>
 				</div>
-				<div onclick="history.back();" class="page_cover"></div>
+				<!-- <div onclick="history.back();" class="page_cover"></div> -->
+				<div id="page-cover" class="page_cover"></div>
 				<div id="menu" class="v-menu">
-					<div onclick="history.back();" class="close">
+					<!-- <div id="menu-close" onclick="history.back();" class="close"> -->
+					<div id="menu-close" class="close">
 						<i class="fas fa-times-circle btn-menu-close"></i>
 					</div>
 					<div id="getLast" class="v-menu-list v-menu-first">20대 총선 결과</div>
 					<div class="v-menu-list">후보자 조회</div>
-				</div>
 
-				<!-- <div id="menu" class="v-menu">
-					<i class="fas fa-bars"></i>
-  					<div onclick="history.back();" class="close"></div>
-				</div> -->
+					<div class="v-menu-bottom">
+						<strong>사전투표소 투표</strong>
+						<p>2020. 4. 10(금) ~ 4. 11(토)</p>
+						<strong>선거일 투표</strong>
+						<p>2020. 4. 15(수)</p>
+						<p>[매일 06:00 ~ 18:00]</p>
+						<strong>정보제공</strong>
+						<p>
+							<a href="http://info.nec.go.kr/"
+								>중앙선거관리위원회<br />선거통계시스템</a
+							>
+						</p>
+						<strong>제작</strong>
+						<p>
+							<a href="https://github.com/KoreanNationalElection/KoreaGeneralElection"
+								>HS Glass</a
+							>
+						</p>
+					</div>
+				</div>
 			</div>
 			<div id="v-content">
 				<div id="v-info">
 					<div id="infoClose">
 						<i class="fas fa-times-circle btn-info-close"></i>
 					</div>
-					<table class="v-last-party-info">
-						<thead>
-							<tr class="header-row">
-								<th class="cell col1" colspan="2">정당</th>
-								<th class="cell col2">지역구</th>
-								<th class="cell col2">비례대표</th>
-								<th class="cell col2">총합</th>
-								<th class="cell col2">비율</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td class="cell col1 party-new-nuri"></td>
-								<td class="cell col2">새누리당</td>
-								<td class="cell col2">105석</td>
-								<td class="cell col2">17석</td>
-								<td class="cell col2">122석</td>
-								<td class="cell col2">40.7%</td>
-							</tr>
-							<tr>
-								<td class="cell col1 party-with-demo"></td>
-								<td class="cell col2">더불어민주당</td>
-								<td class="cell col2">110석</td>
-								<td class="cell col2">13석</td>
-								<td class="cell col2">123석</td>
-								<td class="cell col2">41.0%</td>
-							</tr>
-							<tr>
-								<td class="cell col1 party-of-people"></td>
-								<td class="cell col2">국민의당</td>
-								<td class="cell col2">25석</td>
-								<td class="cell col2">13석</td>
-								<td class="cell col2">38석</td>
-								<td class="cell col2">12.7%</td>
-							</tr>
-							<tr>
-								<td class="cell col1 party-justice"></td>
-								<td class="cell col2">정의당</td>
-								<td class="cell col2">2석</td>
-								<td class="cell col2">4석</td>
-								<td class="cell col2">6석</td>
-								<td class="cell col2">2.0%</td>
-							</tr>
-							<tr>
-								<td class="cell col1 party-none"></td>
-								<td class="cell col2">무소속</td>
-								<td class="cell col2">11석</td>
-								<td class="cell col2">-</td>
-								<td class="cell col2">11석</td>
-								<td class="cell col2">3.7%</td>
-							</tr>
-						</tbody>
-					</table>
+					<div>
+						<table class="v-last-party-info">
+							<thead>
+								<tr class="header-row">
+									<th class="cell col1" colspan="2">정당</th>
+									<th class="cell col2">지역구</th>
+									<th class="cell col2">비례대표</th>
+									<th class="cell col2">총합</th>
+									<th class="cell col2">비율</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="cell col1 party-new-nuri"></td>
+									<td class="cell col2">새누리당</td>
+									<td class="cell col2">105석</td>
+									<td class="cell col2">17석</td>
+									<td class="cell col2">122석</td>
+									<td class="cell col2">40.7%</td>
+								</tr>
+								<tr>
+									<td class="cell col1 party-with-demo"></td>
+									<td class="cell col2">더불어민주당</td>
+									<td class="cell col2">110석</td>
+									<td class="cell col2">13석</td>
+									<td class="cell col2">123석</td>
+									<td class="cell col2">41.0%</td>
+								</tr>
+								<tr>
+									<td class="cell col1 party-of-people"></td>
+									<td class="cell col2">국민의당</td>
+									<td class="cell col2">25석</td>
+									<td class="cell col2">13석</td>
+									<td class="cell col2">38석</td>
+									<td class="cell col2">12.7%</td>
+								</tr>
+								<tr>
+									<td class="cell col1 party-justice"></td>
+									<td class="cell col2">정의당</td>
+									<td class="cell col2">2석</td>
+									<td class="cell col2">4석</td>
+									<td class="cell col2">6석</td>
+									<td class="cell col2">2.0%</td>
+								</tr>
+								<tr>
+									<td class="cell col1 party-none"></td>
+									<td class="cell col2">무소속</td>
+									<td class="cell col2">11석</td>
+									<td class="cell col2">-</td>
+									<td class="cell col2">11석</td>
+									<td class="cell col2">3.7%</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 				<div id="v-map"></div>
-				<!-- <div class="v-info">
-					<p>사전투표소 투표 : 2020. 4. 10(금) ~ 4. 11(토) [매일 06:00 ~ 18:00]</p>
-					<p>선거일 투표 : 2020. 4. 15(수) [06:00 ~ 18:00]</p>
-					<p>
-						정보제공 :
-						<a href="http://info.nec.go.kr/">중앙선거관리위원회 선거통계시스템</a>
-					</p>
-					<p>제작: <a href="https://github.com/BryceYangS/generalElection">HS Crew</a></p>
-				</div> -->
 			</div>
 		</div>
 	</body>
