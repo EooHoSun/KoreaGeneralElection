@@ -14,23 +14,11 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-<<<<<<< HEAD
-		"@fortawesome/fontawesome-free": "^5.12.1",
-		"@fortawesome/free-solid-svg-icons": "^5.12.1",
-		"autocompleter": "^6.0.1",
-=======
->>>>>>> upstream/master
 		"axios": "^0.19.2",
 		"body-parser": "^1.19.0",
 		"express": "^4.17.1",
 		"leaflet": "^1.6.0",
-<<<<<<< HEAD
-		"leaflet-control-custom": "^1.0.0",
-		"leaflet-search": "^2.9.8",
-		"normalize.css": "^8.0.1"
-=======
 		"leaflet-control-custom": "^1.0.0"
->>>>>>> upstream/master
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.8.4",
