@@ -131,6 +131,11 @@ module.exports = function(env) {
 			},
 		},
 		devServer: {
+			host: '0.0.0.0',
+			port: 8080,
+			useLocalIp: true,
+			hot: true,
+			open: true,
 			proxy: {
 				'/api': {
 					target: 'http://localhost:8090',
