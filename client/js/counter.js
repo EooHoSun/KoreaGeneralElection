@@ -1,5 +1,5 @@
 function counter(elemId) {
-	const dDay = new Date('2020-04-15 06:00:00').getTime()
+	const dDay = new Date('2020-04-15T06:00:00').getTime()
 	const el = document.getElementById(elemId)
 
 	const intervalFunc = setInterval(() => {
