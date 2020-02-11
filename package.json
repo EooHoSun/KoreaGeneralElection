@@ -14,17 +14,23 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+<<<<<<< HEAD
 		"@fortawesome/fontawesome-free": "^5.12.1",
 		"@fortawesome/free-solid-svg-icons": "^5.12.1",
 		"autocompleter": "^6.0.1",
+=======
+>>>>>>> upstream/master
 		"axios": "^0.19.2",
 		"body-parser": "^1.19.0",
-		"cors": "^2.8.5",
 		"express": "^4.17.1",
 		"leaflet": "^1.6.0",
+<<<<<<< HEAD
 		"leaflet-control-custom": "^1.0.0",
 		"leaflet-search": "^2.9.8",
 		"normalize.css": "^8.0.1"
+=======
+		"leaflet-control-custom": "^1.0.0"
+>>>>>>> upstream/master
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.8.4",
@@ -47,6 +53,10 @@
 		"html-webpack-plugin": "^4.0.0-beta.11",
 		"mini-css-extract-plugin": "^0.9.0",
 		"node-sass": "^4.13.1",
+		"postcss-flexbugs-fixes": "^4.2.0",
+		"postcss-loader": "^3.0.0",
+		"postcss-normalize": "^8.0.1",
+		"postcss-preset-env": "^6.7.0",
 		"prettier": "^1.19.1",
 		"regenerator-runtime": "^0.13.3",
 		"sass-loader": "^8.0.2",

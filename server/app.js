@@ -1,7 +1,6 @@
 const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
-const cors = require('cors')
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -13,10 +12,6 @@ app.use(
 		extended: false,
 	})
 )
-
-if (!isProd) {
-	app.use(cors())
-}
 
 app.use('/api', require('./route'))
 
