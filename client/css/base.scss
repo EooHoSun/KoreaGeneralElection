@@ -1,5 +1,8 @@
 @import-normalize;
 
+// 공통변수
+@import './variables.scss';
+
 // 폰트 추가
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500&display=swap&subset=korean');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css');
@@ -9,9 +12,21 @@ body {
 	width: 100%;
 	height: 100%;
 }
+html {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-font-smoothing: antialiased;
+}
 body {
 	margin: 0;
-	font-family: 'Noto Sans KR', sans-serif;
+	font-size: $default-font-size;
+	font-family: $default-font-family;
+}
+a {
+	color: #2196f3;
+	text-decoration: none;
+	@include hover-active {
+		color: #1769aa;
+	}
 }
 
 // wrap
@@ -37,129 +52,248 @@ body {
 	align-items: center;
 	margin-bottom: 8px;
 	h1 {
-		font-size: 32px;
 		margin: 0;
+		font-size: 32px;
+		transition: font-size 0.3s;
 	}
 }
 .v-title-logo {
+	$logo-size-xl: 48px;
 	background: url('../img/vote.png') no-repeat center center;
-	background-size: 48px 48px;
-	width: 48px;
-	height: 48px;
+	background-size: $logo-size-xl $logo-size-xl;
+	width: $logo-size-xl;
+	height: $logo-size-xl;
 	margin-right: 16px;
+	transition: width 0.3s, height 0.3s;
 }
 .v-header-timer {
-	font-size: 24px;
+	font-size: 22px;
+	transition: font-size 0.3s;
 }
-
-// 컨텐츠
-#v-content {
-	flex-grow: 1;
-	flex-shrink: 0;
-	position: relative;
-	#v-info {
-		display: none;
+@media (max-width: $breakpoint-sm) {
+	.v-title h1 {
+		font-size: 22px;
 	}
-}
-#v-map {
-	position: relative;
-	z-index: 0;
-	width: 100%;
-	height: 100%;
-	font-family: 'Noto Sans KR', sans-serif;
-}
-
-//좌측 상단 메뉴 버튼
-html.open {
-	overflow: hidden;
-}
-.v-menu {
-	.v-menu-list {
-		height: 45px;
-		line-height: 45px;
-		font-size: 20px;
-		cursor: pointer;
+	.v-title-logo {
+		$logo-size-sm: 30px;
+		background-size: $logo-size-sm $logo-size-sm;
+		width: $logo-size-sm;
+		height: $logo-size-sm;
+		margin-right: 8px;
 	}
-	.v-menu-first {
-		margin-top: 50px;
-	}
-	.v-menu-bottom {
-		width: 100%;
-		position: absolute;
-		bottom: 0px;
+	.v-header-timer {
+		font-size: 16px;
 	}
 }
 
-.v-menu-toggle {
-	width: 40px;
-	height: 40px;
+// 좌측 상단 메뉴 버튼
+$hamburger-layer-width: 30px;
+$hamburger-padding-x: 10px;
+$hamburger-padding-y: 10px;
+$hamburger-active-layer-color: #fff;
+$hamburger-hover-opacity: 0.8;
+$hamburger-types: (slider);
+@import '~hamburgers/_sass/hamburgers/hamburgers.scss';
+$hamburger-height: 46px;
+#v-sidebar-toggle {
 	position: absolute;
-	top: 33px;
-	z-index: 1;
+	top: ($header-height-xl - $hamburger-height) / 2;
+	left: 10px;
+	z-index: 11;
+	transition: left 0.3s ease;
+	outline: none;
 	cursor: pointer;
-	border-radius: 50%;
-	background-color: black;
-	text-align: center;
+	&.is-active {
+		left: 215px;
+	}
+}
+@media (max-width: $breakpoint-sm) {
+	#v-sidebar-toggle {
+		top: ($header-height-sm - $hamburger-height) / 2;
+	}
 }
 
-.close {
-	width: 30px;
-	height: 30px;
-	position: absolute;
-	right: 0px;
-	top: 0px;
-	cursor: pointer;
-}
-.btn-menu-toggle {
-	font-size: 32px;
-	color: white;
-	line-height: 40px;
-}
-.btn-menu-close {
-	font-size: 28px;
-}
-
-#menu {
+// 메뉴
+#v-sidebar {
 	width: 215px;
 	height: 100%;
 	position: fixed;
 	top: 0px;
 	left: -217px;
 	z-index: 10;
-	border: 1px solid #c9c9c9;
-	background-color: white;
-	text-align: center;
-	transition: All 0.2s ease;
-	-webkit-transition: All 0.2s ease;
-	-moz-transition: All 0.2s ease;
-	-o-transition: All 0.2s ease;
+	padding: 16px;
+	box-sizing: border-box;
+	background-color: #fff;
+	transition: left 0.3s ease;
+	display: flex;
+	flex-direction: column;
+	&.open {
+		left: 0px;
+	}
+
+	// 메뉴 목록
+	.v-menu {
+		list-style: none;
+		margin: 0 0 auto 0;
+		padding: 0;
+		text-align: center;
+		li {
+			font-size: 20px;
+			line-height: 45px;
+			cursor: pointer;
+			&:hover {
+				font-weight: 500;
+			}
+		}
+	}
+
+	// 사이드바 하단
+	.v-sidebar-bottom {
+		& > div {
+			margin-bottom: 20px;
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+		p {
+			margin: 0;
+			&:first-child {
+				margin-bottom: 8px;
+			}
+		}
+		strong {
+			font-size: 16px;
+		}
+		.github-link {
+			color: #000;
+			text-decoration: none;
+			i {
+				font-size: 36px;
+			}
+		}
+	}
 }
 
-#menu.open {
-	left: 0px;
-}
-
-.page_cover {
+// 사이드바 page cover
+#v-page-cover {
 	width: 100%;
 	height: 100%;
 	position: fixed;
 	top: 0px;
 	left: 0px;
-	background-color: rgba(0, 0, 0, 0.4);
+	background-color: rgba(0, 0, 0, 0.6);
 	z-index: 4;
 	display: none;
+	&.open {
+		display: block;
+	}
 }
 
-.page_cover.open {
-	display: block;
+html {
+	&.open {
+		overflow: hidden;
+	}
 }
 
-//정보 조회 닫기 버튼
-.btn-info-close {
+// 컨텐츠
+#v-content {
+	flex: 1;
+	position: relative;
+}
+#v-map {
+	position: relative;
+	z-index: 0;
+	width: 100%;
+	height: 100%;
+	font-family: $default-font-family;
+}
+
+// 20대 총선 결과
+#v-last-result {
+	display: none;
 	position: absolute;
-	bottom: 186px;
-	z-index: 999;
+	left: 20px;
+	bottom: 20px;
+}
+#v-last-result-close {
+	position: absolute;
+	left: 0;
+	top: -30px;
 	font-size: 30px;
-	left: 3px;
 	cursor: pointer;
+}
+
+// 20대 총선 정당 색상정보 테이블
+.v-last-party-info {
+	$border: 1px solid #e7e7e7;
+	max-width: 100%;
+	background-color: #fff;
+	table-layout: fixed;
+	border-collapse: separate;
+	border-spacing: 0;
+	border-top: $border;
+	border-left: $border;
+	thead {
+		text-align: center;
+	}
+	th,
+	td {
+		padding: 5px;
+		border-bottom: $border;
+		border-right: $border;
+	}
+	tbody {
+		tr {
+			td:first-child {
+				border-left-width: 16px;
+				border-left-style: solid;
+			}
+		}
+	}
+	.party-new-nuri {
+		td:first-child {
+			border-left-color: #c9151e;
+		}
+	}
+	.party-with-demo {
+		td:first-child {
+			border-left-color: #1870b9;
+		}
+	}
+	.party-of-people {
+		td:first-child {
+			border-left-color: #006542;
+		}
+	}
+	.party-justice {
+		td:first-child {
+			border-left-color: #ffcc00;
+		}
+	}
+	.party-none {
+		td:first-child {
+			border-color: #eee;
+		}
+	}
+}
+@media (min-width: $breakpoint-xs + 100px + 40px) {
+	.v-last-party-info {
+		min-width: $breakpoint-xs + 100px;
+	}
+}
+@media (max-width: $breakpoint-xs + 100px + 40px) {
+	#v-last-result {
+		left: 0;
+		bottom: 0;
+	}
+	.v-last-party-info {
+		width: 100%;
+		thead {
+			tr {
+				th:first-child {
+					width: 95px;
+				}
+			}
+		}
+	}
 }

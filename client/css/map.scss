@@ -8,67 +8,50 @@
 
 // 내위치찾기 버튼
 .v-now-loc {
+	$size: 26px;
+	width: $size;
+	height: $size;
+	padding: 0;
 	border: 0;
 	border-radius: 4px;
+	background-color: #fff;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
-	background: #ffffff url('../img/location-icon.png') no-repeat center center;
-	background-size: 22px 22px;
-	width: 26px;
-	height: 26px;
 	cursor: pointer;
+	i {
+		font-size: 16px;
+		line-height: $size;
+	}
 	&:hover {
 		background-color: #f4f4f4;
+	}
+
+	// 모바일에서는 아이콘 형태가 다름
+	.leaflet-touch & {
+		$msize: 34px;
+		width: $msize;
+		height: $msize;
+		border: 2px solid rgba(0, 0, 0, 0.2);
+		background-clip: padding-box;
+		box-shadow: none;
+		i {
+			font-size: 18px;
+			line-height: $msize - 4px;
+		}
 	}
 }
 
 // 좌측하단 info box
-.v-info {
-	position: absolute;
-	left: 20px;
-	bottom: 20px;
-	z-index: 1;
-	padding: 10px;
-	box-sizing: border-box;
-	max-width: calc(100% - 40px);
-	background-color: rgba(255, 255, 255, 0.5);
-	p {
-		margin-top: 0;
-		margin-bottom: 0;
-	}
-}
-
-// 20대 총선 정당 색상정보 테이블 => css 정리 필요
-.v-last-party-info {
-	display: none;
-	z-index: 999;
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	background-color: rgba(255, 255, 255, 0.5);
-	th:first-child {
-		width: 15%;
-	}
-	.header-row {
-		text-align: center;
-	}
-	.cell {
-		padding: 3px;
-		border-bottom: 1px solid #ddd;
-		border-right: 1px solid #ddd;
-	}
-	.party-new-nuri {
-		background-color: #c9151e;
-	}
-	.party-with-demo {
-		background-color: #1870b9;
-	}
-	.party-of-people {
-		background-color: #006542;
-	}
-	.party-justice {
-		background-color: #ffcc00;
-	}
-	.party-none {
-		background-color: #fff;
-	}
-}
+// .v-info {
+// 	position: absolute;
+// 	left: 20px;
+// 	bottom: 20px;
+// 	z-index: 1;
+// 	padding: 10px;
+// 	box-sizing: border-box;
+// 	max-width: calc(100% - 40px);
+// 	background-color: rgba(255, 255, 255, 0.5);
+// 	p {
+// 		margin-top: 0;
+// 		margin-bottom: 0;
+// 	}
+// }
