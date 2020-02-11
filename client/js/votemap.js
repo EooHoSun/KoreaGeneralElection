@@ -3,7 +3,8 @@ import * as L from 'leaflet'
 import axios from 'axios'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import markerIcon from '../img/marker.png'
-import Search from './search';
+import search from './search'
+import Search from './search'
 
 /**
  * 정당 & 레이어 색상
@@ -116,50 +117,6 @@ VoteMap.prototype._createGeolocButton = function() {
 }
 
 /**
- * 20대 총선 의석수 결과 정보 보여주기 버튼
- */
-
-VoteMap.prototype._createLastElectionResultButton = function() {
-	L.control
-		.custom({
-			position: 'topright',
-			content:
-				'<button type="button" class="btn btn-1">' +
-				'<i class="fas fa-compass">20대선거결과</i>' +
-				'</button>',
-			classes: 'btn-group-vertical btn-group-sm',
-			style: {
-				margin: '10px',
-				padding: '0px 0 0 0',
-				cursor: 'pointer',
-			},
-			events: {
-				click(data) {
-					const clickMenu = data.toElement.innerText
-					console.log(clickMenu)
-					if (clickMenu === '20대선거결과') {
-						const lastElectionResultInfoTable = document.getElementsByClassName(
-							'last-party-info'
-						)[0]
-						if (
-							lastElectionResultInfoTable.style.display === '' ||
-							document.getElementsByClassName('last-party-info')[0].style.display ===
-								'none'
-						) {
-							document.getElementsByClassName('last-party-info')[0].style.display =
-								'table'
-						} else {
-							document.getElementsByClassName('last-party-info')[0].style.display =
-								'none'
-						}
-					}
-				},
-			},
-		})
-		.addTo(this.map)
-}
-
-/**
  * 20대 선거구 그리기
  */
 VoteMap.prototype._drawElect20Layer = async function() {
@@ -196,9 +153,7 @@ VoteMap.prototype._drawElect20Layer = async function() {
  * search box 만들기
  */
 VoteMap.prototype._setSearch = async function() {
-	const searchBox = new Search(await axios.get('/api/data?type=20'))
-	searchBox.search.addTo(this.map)
-	searchBox.setAutoComplete()
+	this.map.addControl(new Search(this.hjd))
 }
 
 /**

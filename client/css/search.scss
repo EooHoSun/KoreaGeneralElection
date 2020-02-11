@@ -1,16 +1,31 @@
+.s-group{
+    text-align: left;
+}
 .s-ul-div{
-    height : 100px;
+    padding-top: 0;
+    text-align: left;
+    min-height: 0;
+    max-height : 100px;
+    width : 60%;
     overflow-y : scroll;
     -ms-overflow-style: none; // IE에서 스크롤바 감춤
     &::-webkit-scrollbar { 
       display: none !important; // 윈도우 크롬 등
     }
+    background-color: white;
 }
 
 .s-ul{
-    list-style:none
+    min-height: 0;
+    padding-left: 0;
+    list-style:none;
+    
 }
 
 .s-li{
     cursor: pointer;
+    &:hover{
+        background-color: gray;
+        color: white;
+    }
 }

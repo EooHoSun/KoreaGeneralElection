@@ -1,7 +1,7 @@
 
 # Created by https://www.gitignore.io/api/node
 # Edit at https://www.gitignore.io/?templates=node
-
+.history/
 ### Node ###
 # Logs
 logs
@@ -113,5 +113,7 @@ backup/
 server/public/
 public/
 **/server/public/
+
+yarn.lock
 
 # End of https://www.gitignore.io/api/node
