@@ -55,6 +55,9 @@ body {
 	flex-grow: 1;
 	flex-shrink: 0;
 	position: relative;
+	#v-info {
+		display: none;
+	}
 }
 #v-map {
 	position: relative;
@@ -62,4 +65,92 @@ body {
 	width: 100%;
 	height: 100%;
 	font-family: 'Noto Sans KR', sans-serif;
+}
+
+//좌측 상단 메뉴 버튼
+html.open {
+	overflow: hidden;
+}
+
+.v-menu-toggle {
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	// right: 0px;
+	top: 0px;
+	z-index: 1;
+	background-image: url('http://s1.daumcdn.net/cfs.tistory/custom/blog/204/2048858/skin/images/menu.png');
+	background-size: 50%;
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+}
+
+.close {
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	background-image: url('http://s1.daumcdn.net/cfs.tistory/custom/blog/204/2048858/skin/images/close.png');
+	background-size: 50%;
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+}
+
+#menu {
+	width: 150px;
+	height: 100%;
+	position: fixed;
+	top: 0px;
+	left: -152px;
+	z-index: 10;
+	border: 1px solid #c9c9c9;
+	background-color: white;
+	text-align: center;
+	transition: All 0.2s ease;
+	-webkit-transition: All 0.2s ease;
+	-moz-transition: All 0.2s ease;
+	-o-transition: All 0.2s ease;
+}
+
+#menu.open {
+	left: 0px;
+}
+
+.page_cover {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background-color: rgba(0, 0, 0, 0.4);
+	z-index: 4;
+	display: none;
+}
+
+.page_cover.open {
+	display: block;
+}
+
+.v-menu-list {
+	height: 45px;
+	line-height: 45px;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.v-menu-first {
+	margin-top: 50px;
+}
+
+//정보 조회 닫기 버튼
+.fa-times-circle {
+	position: absolute;
+	bottom: 186px;
+	z-index: 999;
+	font-size: 30px;
+	left: 3px;
+	cursor: pointer;
 }
