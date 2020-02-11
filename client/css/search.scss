@@ -1,0 +1,16 @@
+.s-ul-div{
+    height : 100px;
+    overflow-y : scroll;
+    -ms-overflow-style: none; // IE에서 스크롤바 감춤
+    &::-webkit-scrollbar { 
+      display: none !important; // 윈도우 크롬 등
+    }
+}
+
+.s-ul{
+    list-style:none
+}
+
+.s-li{
+    cursor: pointer;
+}
