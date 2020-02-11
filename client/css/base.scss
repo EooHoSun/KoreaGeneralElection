@@ -73,6 +73,22 @@ body {
 html.open {
 	overflow: hidden;
 }
+.v-menu {
+	.v-menu-list {
+		height: 45px;
+		line-height: 45px;
+		font-size: 20px;
+		cursor: pointer;
+	}
+	.v-menu-first {
+		margin-top: 50px;
+	}
+	.v-menu-bottom {
+		width: 100%;
+		position: absolute;
+		bottom: 0px;
+	}
+}
 
 .v-menu-toggle {
 	width: 40px;
@@ -104,11 +120,11 @@ html.open {
 }
 
 #menu {
-	width: 150px;
+	width: 215px;
 	height: 100%;
 	position: fixed;
 	top: 0px;
-	left: -152px;
+	left: -215px;
 	z-index: 10;
 	border: 1px solid #c9c9c9;
 	background-color: white;
@@ -136,17 +152,6 @@ html.open {
 
 .page_cover.open {
 	display: block;
-}
-
-.v-menu-list {
-	height: 45px;
-	line-height: 45px;
-	font-size: 20px;
-	cursor: pointer;
-}
-
-.v-menu-first {
-	margin-top: 50px;
 }
 
 //정보 조회 닫기 버튼
