@@ -1,11 +1,39 @@
+/* eslint-disable global-require */
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const postcssNormalize = require('postcss-normalize')
 
 module.exports = function(env) {
 	const isProd = env === 'production'
 	const entryPoints = ['index'] // entry
+
+	const getStyleLoaders = preProcessor =>
+		[
+			!isProd && 'style-loader',
+			isProd && { loader: MiniCssExtractPlugin.loader },
+			{
+				loader: 'css-loader',
+				options: {
+					importLoaders: preProcessor ? 3 : 1,
+				},
+			},
+			{
+				loader: 'postcss-loader',
+				options: {
+					ident: 'postcss',
+					plugins: () => [
+						require('postcss-flexbugs-fixes'),
+						require('postcss-preset-env')({
+							stage: 3,
+						}),
+						postcssNormalize(),
+					],
+				},
+			},
+			preProcessor && 'sass-loader',
+		].filter(Boolean)
 
 	return {
 		mode: isProd ? 'production' : 'development',
@@ -32,27 +60,28 @@ module.exports = function(env) {
 						},
 						{
 							test: /\.css$/,
-							use: [
-								isProd && { loader: MiniCssExtractPlugin.loader },
-								!isProd && 'style-loader',
-								'css-loader',
-							].filter(Boolean),
+							use: getStyleLoaders(false),
+							sideEffects: true,
 						},
 						{
 							test: /\.(scss|sass)$/,
-							use: [
-								isProd && { loader: MiniCssExtractPlugin.loader },
-								!isProd && 'style-loader',
-								'css-loader',
-								'sass-loader',
-							].filter(Boolean),
+							use: getStyleLoaders(true),
+							sideEffects: true,
 						},
 						{
 							test: /\.html$/i,
 							loader: 'html-loader',
 						},
 						{
-							exclude: [/\.js$/, /\.html$/, /\.json$/],
+							test: [/\.(woff|woff2|ttf|eot)$/],
+							loader: 'file-loader',
+							options: {
+								name: 'static/font/[name].[ext]',
+								esModule: false,
+							},
+						},
+						{
+							exclude: [/\.js$/, /\.json$/],
 							loader: 'file-loader',
 							options: {
 								name: 'static/media/[name].[hash:8].[ext]',

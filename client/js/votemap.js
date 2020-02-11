@@ -123,7 +123,7 @@ VoteMap.prototype._createLastElectionResultButton = function() {
 			position: 'topright',
 			content:
 				'<button type="button" class="btn btn-1">' +
-				'    <i class="fa fa-compass">20대선거결과</i>' +
+				'<i class="fas fa-compass">20대선거결과</i>' +
 				'</button>',
 			classes: 'btn-group-vertical btn-group-sm',
 			style: {
