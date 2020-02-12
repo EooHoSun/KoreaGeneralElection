@@ -2,6 +2,7 @@ import 'leaflet/dist/leaflet.css'
 import * as L from 'leaflet'
 import axios from 'axios'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
+import Search from './search'
 
 /**
  * 정당 & 레이어 색상
@@ -24,6 +25,7 @@ function VoteMap(mapId) {
 	this.map = {}
 	this.mapId = mapId
 	this.markers = {}
+	this.hjd = {}
 }
 
 /**
@@ -33,6 +35,7 @@ VoteMap.prototype.init = async function init() {
 	const zoom = 7 // init zoom
 	const center = L.latLng(36.1358642, 128.0785804) // init center
 
+	this._setHJD()
 	// Google Map
 	const googleMap = L.tileLayer('https://mt0.google.com/vt/lyrs=m&hl=kr&x={x}&y={y}&z={z}', {
 		attribution: `&copy; <a target="_blank" href="https://maps.google.com/maps?ll=${center.lat},${center.lng}&amp;z=13&amp;t=m&amp;hl=ko-KR&amp;gl=US&amp;mapclient=apiv3" title="Google 지도에서 이 지역을 보려면 클릭하세요." ><img alt="" src="https://maps.gstatic.com/mapfiles/api-3/images/google4.png" draggable="false"></a>`,
@@ -55,6 +58,8 @@ VoteMap.prototype.init = async function init() {
 
 	// 20대 선거구 그리기
 	await this._drawElect20Layer()
+
+	this._setSearch()
 
 	return this.map
 }
@@ -146,6 +151,30 @@ VoteMap.prototype._drawElect20Layer = async function() {
 			{ opacity: 1, className: 'v-elected-tooltip' }
 		)
 		.addTo(this.map)
+}
+
+/**
+ * search box 만들기
+ */
+VoteMap.prototype._setSearch = async function() {
+	this.map.addControl(new Search(this.hjd))
+}
+
+/**
+ * 행정동 setting
+ */
+VoteMap.prototype._setHJD = async function() {
+	const { data, status } = await axios.get('/api/data?type=20')
+	if (status !== 200) return
+
+	this.hjd = L.geoJSON(data.geoJson, {
+		style: {
+			weight: 1,
+			color: '#00ff0000',
+		},
+	})
+	this.hjd.addTo(this.map)
+	console.log(this.hjd)
 }
 
 export default VoteMap
