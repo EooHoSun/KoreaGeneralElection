@@ -1,6 +1,6 @@
 import 'leaflet/dist/leaflet.css'
-import * as L from 'leaflet'
 import axios from 'axios'
+import * as L from 'leaflet'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import Search from './search'
 
@@ -22,10 +22,14 @@ const PARTY_COLOR = [
  * @param {String} mapId
  */
 function VoteMap(mapId) {
-	this.map = {}
 	this.mapId = mapId
+
+	this.map = null
+	this.layers = {}
 	this.markers = {}
-	this.hjd = {}
+	this.controls = {}
+
+	this.init()
 }
 
 /**
@@ -35,7 +39,6 @@ VoteMap.prototype.init = async function init() {
 	const zoom = 7 // init zoom
 	const center = L.latLng(36.1358642, 128.0785804) // init center
 
-	this._setHJD()
 	// Google Map
 	const googleMap = L.tileLayer('https://mt0.google.com/vt/lyrs=m&hl=kr&x={x}&y={y}&z={z}', {
 		attribution: `&copy; <a target="_blank" href="https://maps.google.com/maps?ll=${center.lat},${center.lng}&amp;z=13&amp;t=m&amp;hl=ko-KR&amp;gl=US&amp;mapclient=apiv3" title="Google 지도에서 이 지역을 보려면 클릭하세요." ><img alt="" src="https://maps.gstatic.com/mapfiles/api-3/images/google4.png" draggable="false"></a>`,
@@ -59,6 +62,7 @@ VoteMap.prototype.init = async function init() {
 	// 20대 선거구 그리기
 	await this._drawElect20Layer()
 
+	// search box 만들기
 	this._setSearch()
 
 	return this.map
@@ -124,7 +128,8 @@ VoteMap.prototype._createGeolocButton = function() {
  */
 VoteMap.prototype._drawElect20Layer = async function() {
 	const { data } = await axios.get('/api/data?type=20')
-	L.geoJSON(data.geoJson, {
+
+	this.layers.elect20 = L.geoJSON(data.geoJson, {
 		style(feature) {
 			const elected = data.elected.find(x => x.elect_cd === feature.properties.elect_cd)
 			const party = elected ? elected.party : ''
@@ -134,47 +139,29 @@ VoteMap.prototype._drawElect20Layer = async function() {
 				fillOpacity: 0.4,
 			}
 		},
-	})
-		.bindTooltip(
-			layer => {
-				const elected = data.elected.find(
-					x => x.elect_cd === layer.feature.properties.elect_cd
-				)
-				if (!elected) return '<strong>선거구 없음</strong>'
-				return (
-					// `<p><strong>행정동 : </strong>${layer.feature.properties.adm_nm}</p>` +
-					`<p><strong>선거구 : </strong>${elected.sungugu}</p>` +
-					`<p><strong>당선인 : </strong>${elected.name}</p>` +
-					`<p><strong>당선당 : </strong>${elected.party}</p>`
-				)
-			},
-			{ opacity: 1, className: 'v-elected-tooltip' }
-		)
-		.addTo(this.map)
+	}).bindTooltip(
+		layer => {
+			const elected = data.elected.find(x => x.elect_cd === layer.feature.properties.elect_cd)
+			if (!elected) return '<strong>선거구 없음</strong>'
+			return (
+				// `<p><strong>행정동 : </strong>${layer.feature.properties.adm_nm}</p>` +
+				`<p><strong>선거구 : </strong>${elected.sungugu}</p>` +
+				`<p><strong>당선인 : </strong>${elected.name}</p>` +
+				`<p><strong>당선당 : </strong>${elected.party}</p>`
+			)
+		},
+		{ opacity: 1, className: 'v-elected-tooltip' }
+	)
+
+	this.layers.elect20.addTo(this.map)
 }
 
 /**
  * search box 만들기
  */
-VoteMap.prototype._setSearch = async function() {
-	this.map.addControl(new Search(this.hjd))
-}
-
-/**
- * 행정동 setting
- */
-VoteMap.prototype._setHJD = async function() {
-	const { data, status } = await axios.get('/api/data?type=20')
-	if (status !== 200) return
-
-	this.hjd = L.geoJSON(data.geoJson, {
-		style: {
-			weight: 1,
-			color: '#00ff0000',
-		},
-	})
-	this.hjd.addTo(this.map)
-	console.log(this.hjd)
+VoteMap.prototype._setSearch = function() {
+	this.controls.search = new Search(this.layers.elect20)
+	this.map.addControl(this.controls.search)
 }
 
 export default VoteMap
