@@ -47,6 +47,10 @@ VoteMap.prototype.init = async function init() {
 		zoom,
 		minZoom: 6,
 		layers: googleMap,
+		maxBounds: [
+			[31.947632, 123.764743],
+			[38.814133, 132.180872],
+		],
 	})
 
 	// 내위치찾기 버튼 생성
@@ -127,6 +131,7 @@ VoteMap.prototype._drawElect20Layer = async function() {
 			return {
 				weight: 1,
 				color: PARTY_COLOR.find(x => x.party === party).color,
+				fillOpacity: 0.4,
 			}
 		},
 	})
