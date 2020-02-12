@@ -103,6 +103,7 @@ VoteMap.prototype._createGeolocButton = function() {
 								{ icon: locIcon }
 							)
 							self.markers.myloc.addTo(self.map)
+							self.map.setView([position.coords.latitude, position.coords.longitude])
 						},
 						error => {
 							// 위치를 가져오는데 실패한 경우
