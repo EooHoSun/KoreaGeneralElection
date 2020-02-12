@@ -1,17 +1,11 @@
-import 'leaflet/dist/leaflet.css'
+import 'leaflet-search/dist/leaflet-search.min.css' // css 우선 import
 import * as L from 'leaflet'
 import 'leaflet-search'
 
 /**
  * Search 정의
- *
  */
 function Search(data) {
-    this.popupDiv = {}
-	return this.init(data)
-}
-
-Search.prototype.init = function(data) {
 	return new L.Control.Search({
 		position: 'topleft',
 		layer: data,
@@ -29,4 +23,5 @@ Search.prototype.init = function(data) {
 			console.log(e)
 		})
 }
+
 export default Search

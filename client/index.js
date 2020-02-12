@@ -13,7 +13,6 @@ function main() {
 
 	// 맵 정의
 	const mapObj = new VoteMap('v-map')
-	mapObj.init()
 }
 
 main()
