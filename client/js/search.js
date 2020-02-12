@@ -7,6 +7,7 @@ import 'leaflet-search'
  *
  */
 function Search(data) {
+    this.popupDiv = {}
 	return this.init(data)
 }
 
