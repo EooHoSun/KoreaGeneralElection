@@ -1,7 +1,5 @@
 // font-awesome 설정
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
-// @import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
-// @import '~@fortawesome/fontawesome-free/scss/solid.scss';
 
 // 기본 css
 @import './base.scss';
@@ -9,5 +7,5 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
 // map 관련 css
 @import './map.scss'; // 여기에서 import 해도 되고, js에서 import 해도 됨
 
-
+// search 관련 css
 @import './leaflet-search.scss'; // 여기에서 import 해도 되고, js에서 import 해도 됨
