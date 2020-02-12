@@ -1,8 +1,9 @@
 function counter(elemId) {
 	const dDay = new Date('2020-04-15T06:00:00').getTime()
 	const el = document.getElementById(elemId)
+	let intervalFunc = null
 
-	const intervalFunc = setInterval(() => {
+	const setCounter = () => {
 		const now = new Date().getTime()
 		const distance = dDay - now
 		const days = Math.floor(distance / (1000 * 60 * 60 * 24))
@@ -15,7 +16,10 @@ function counter(elemId) {
 			clearInterval(intervalFunc)
 			el.innerHTML = 'D-DAY'
 		}
-	}, 1000)
+	}
+
+	setCounter() // 초기 한번 실행
+	intervalFunc = setInterval(setCounter, 1000) // 1초마다 반복 실행
 }
 
 export default counter

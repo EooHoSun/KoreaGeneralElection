@@ -1,0 +1,23 @@
+// breakpoint
+$breakpoint-xs: 400px;
+$breakpoint-sm: 600px;
+$breakpoint-md: 960px;
+$breakpoint-lg: 1280px;
+$breakpoint-xl: 1920px;
+
+// font
+$default-font-size: 14px;
+$default-font-family: 'Noto Sans KR', sans-serif;
+
+// header
+$header-height-sm: 88px;
+$header-height-xl: 113px;
+
+// hover
+@mixin hover-active {
+	&:hover,
+	&:active {
+		@content;
+		transition: color 0.3s;
+	}
+}

@@ -2,8 +2,6 @@ import 'leaflet/dist/leaflet.css'
 import * as L from 'leaflet'
 import axios from 'axios'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
-import markerIcon from '../img/marker.png'
-import search from './search'
 import Search from './search'
 
 /**
@@ -68,48 +66,49 @@ VoteMap.prototype.init = async function init() {
 VoteMap.prototype._createGeolocButton = function() {
 	const self = this
 
-	const locIcon = L.icon({
-		iconUrl: markerIcon,
-		iconSize: [30, 30], // size of the icon
-		iconAnchor: [15, 15], // point of the icon which will correspond to marker's location
+	const locIcon = L.divIcon({
+		html: '<i class="fas fa-map-marker-alt fa-3x"></i>',
+		iconSize: [27, 36],
+		iconAnchor: L.point(13.5, 36),
+		className: '',
 	})
 
 	// Client's Now Location
 	L.control
 		.custom({
 			position: 'topleft',
-			content: '<button type="button" class="v-now-loc"></button>',
+			content: '<button class="v-now-loc"><i class="fas fa-map-marker-alt"></i></button>',
 			events: {
 				click() {
-					// 현재위치 표시X
-					if (!self.markers.myloc) {
-						// Geolocation 객체를 사용
-						if (navigator.geolocation) {
-							const options = {
-								enableHighAccuracy: true, // 정확한 값 : true, 대략적인 값 : false
-								timeout: 10000, // 10 초이상 기다리지 않음.
-							}
-							navigator.geolocation.getCurrentPosition(
-								position => {
-									self.markers.myloc = L.marker(
-										[position.coords.latitude, position.coords.longitude],
-										{ icon: locIcon }
-									)
-									self.markers.myloc.addTo(self.map)
-								},
-								error => {
-									// 위치를 가져오는데 실패한 경우
-									console.log(error.message)
-								},
-								options
-							)
-						} else {
-							alert('위치 기반 서비스를 지원하지 않는 브라우저 입니다.')
-						}
-					} else {
+					if (self.markers.myloc) {
 						self.map.removeLayer(self.markers.myloc)
 						delete self.markers.myloc
+						return
 					}
+
+					if (!navigator.geolocation) {
+						alert('위치 기반 서비스를 지원하지 않는 브라우저 입니다.')
+						return
+					}
+
+					// Geolocation 객체를 사용
+					navigator.geolocation.getCurrentPosition(
+						position => {
+							self.markers.myloc = L.marker(
+								[position.coords.latitude, position.coords.longitude],
+								{ icon: locIcon }
+							)
+							self.markers.myloc.addTo(self.map)
+						},
+						error => {
+							// 위치를 가져오는데 실패한 경우
+							console.log(error.message)
+						},
+						{
+							enableHighAccuracy: true, // 정확한 값 : true, 대략적인 값 : false
+							timeout: 10000, // 10 초이상 기다리지 않음.
+						}
+					)
 				},
 			},
 		})
