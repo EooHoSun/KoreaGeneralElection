@@ -2,6 +2,8 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const TerserJSPlugin = require('terser-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const postcssNormalize = require('postcss-normalize')
 
@@ -17,6 +19,7 @@ module.exports = function(env) {
 				loader: 'css-loader',
 				options: {
 					importLoaders: preProcessor ? 3 : 1,
+					sourceMap: isProd,
 				},
 			},
 			{
@@ -30,13 +33,20 @@ module.exports = function(env) {
 						}),
 						postcssNormalize(),
 					],
+					sourceMap: isProd,
 				},
 			},
-			preProcessor && 'sass-loader',
+			preProcessor && {
+				loader: 'sass-loader',
+				options: {
+					sourceMap: true,
+				},
+			},
 		].filter(Boolean)
 
 	return {
 		mode: isProd ? 'production' : 'development',
+		devtool: isProd ? false : 'cheap-module-source-map',
 		entry: entryPoints.reduce((acc, curr) => {
 			acc[curr] = path.resolve(__dirname, `client/${curr}.js`)
 			return acc
@@ -56,7 +66,13 @@ module.exports = function(env) {
 						{
 							test: /\.js$/,
 							exclude: /node_modules/,
-							use: 'babel-loader',
+							loader: 'babel-loader',
+							options: {
+								cacheDirectory: true,
+								cacheCompression: false,
+								sourceMaps: !isProd,
+								inputSourceMap: !isProd,
+							},
 						},
 						{
 							test: /\.css$/,
@@ -129,6 +145,8 @@ module.exports = function(env) {
 			splitChunks: {
 				chunks: 'all',
 			},
+			minimize: isProd,
+			minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
 		},
 		devServer: {
 			host: '0.0.0.0',
