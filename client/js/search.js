@@ -7,7 +7,7 @@ import 'leaflet-search'
  *
  */
 function Search(data) {
-    this.popupDiv = {}
+	this.popupDiv = {}
 	return this.init(data)
 }
 
@@ -15,6 +15,7 @@ Search.prototype.init = function(data) {
 	return new L.Control.Search({
 		position: 'topleft',
 		layer: data,
+		initial: false,
 		marker: false,
 		propertyName: 'elect_cd',
 		moveToLocation(latlng, _title, map) {
@@ -24,6 +25,7 @@ Search.prototype.init = function(data) {
 	})
 		.on('search:locationfound', function(e) {
 			console.log(e)
+			e.target.showAlert(e.layer)
 		})
 		.on('search:collapsed', function(e) {
 			console.log(e)
