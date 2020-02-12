@@ -3,6 +3,7 @@ import * as L from 'leaflet'
 import axios from 'axios'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import Search from './search'
+import Search2 from './search2'
 
 /**
  * 정당 & 레이어 색상
@@ -157,7 +158,9 @@ VoteMap.prototype._drawElect20Layer = async function() {
  * search box 만들기
  */
 VoteMap.prototype._setSearch = async function() {
-	this.map.addControl(new Search(this.hjd))
+	//this.map.addControl(new Search(this.hjd))
+	// eslint-disable-next-line no-new
+	new Search2(this.hjd)
 }
 
 /**

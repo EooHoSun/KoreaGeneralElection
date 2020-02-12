@@ -16,6 +16,9 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"accessible-autocomplete": "^2.0.2",
+		"autocomplete": "^0.0.1",
+		"autocomplete.js": "^0.37.1",
 		"autocompleter": "^6.0.1",
 		"axios": "^0.19.2",
 		"body-parser": "^1.19.0",

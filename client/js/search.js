@@ -22,6 +22,18 @@ Search.prototype.init = function(data) {
 			const zoom = map.getBoundsZoom(latlng.layer.getBounds())
 			map.setView(latlng, zoom)
 		},
+		filterData(text, records) {
+			// eslint-disable-next-line no-param-reassign
+			text = text.replace(/[.*+?^${}()|[\]\\]/g, '')
+			if (text === '') return []
+			const regSearch = new RegExp(`^${text}`)
+			const frecords = {}
+			// eslint-disable-next-line no-restricted-syntax
+			for (const key in records) {
+				if (regSearch.test(key)) frecords[key] = records[key]
+			}
+			return frecords
+		},
 	})
 		.on('search:locationfound', function(e) {
 			console.log(e)
