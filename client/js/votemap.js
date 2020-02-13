@@ -210,26 +210,33 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 	html += '  <td>성별</td>'
 	html += '  <td>나이</td>'
 	html += '  <td>주소</td>'
-	html += '  <td>직업</td>'
-	html += '  <td>학력</td>'
-	html += '  <td>경력</td>'
-	html += '  <td>전과기록</td>'
+	// html += '  <td>직업</td>'
+	// html += '  <td>학력</td>'
+	// html += '  <td>경력</td>'
+	// html += '  <td>전과기록</td>'
 	html += ' </tr>'
 	html += '</thead>'
 	html += '<tbody>'
 
 	// eslint-disable-next-line no-plusplus
 	for (let i = 0; i < candidates.length; i++) {
+		let name = candidates[i].성명
+		name = name.substr(0, name.indexOf('<br'))
+		let addr = candidates[i].주소
+		const addrArr = addr.split(' ')
+		if (addrArr.length > 2) {
+			addr = `${addrArr[0]} ${addrArr[1]} ${addrArr[2]}`
+		}
 		html += '<tr>'
 		html += ` <td>${candidates[i].소속정당}</td>`
-		html += ` <td>${candidates[i].성명}</td>`
+		html += ` <td>${name}</td>`
 		html += ` <td>${candidates[i].성별}</td>`
 		html += ` <td>${candidates[i].생년월일.substr(-4, 2)}</td>`
-		html += ` <td>${candidates[i].주소}</td>`
-		html += ` <td>${candidates[i].직업}</td>`
-		html += ` <td>${candidates[i].학력}</td>`
-		html += ` <td>${candidates[i].경력}</td>`
-		html += ` <td>${candidates[i].전과기록건수}</td>`
+		html += ` <td>${addr}</td>`
+		// html += ` <td>${candidates[i].직업}</td>`
+		// html += ` <td>${candidates[i].학력}</td>`
+		// html += ` <td>${candidates[i].경력}</td>`
+		// html += ` <td>${candidates[i].전과기록건수}</td>`
 		html += '</tr>'
 	}
 	html += '</tbody>'
