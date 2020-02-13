@@ -2,7 +2,7 @@ import 'leaflet/dist/leaflet.css'
 import axios from 'axios'
 import * as L from 'leaflet'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
-import Search from './search'
+import Search2 from './search2'
 import { createElementFromHTML } from './util'
 
 /**
@@ -72,7 +72,7 @@ VoteMap.prototype.init = async function init() {
 	this._drawElect20Layer()
 
 	// search box 만들기
-	// this._setSearch()
+	this._setSearch()
 
 	return this.map
 }
@@ -280,8 +280,21 @@ VoteMap.prototype._drawElect20Layer = function() {
  * search box 만들기
  */
 VoteMap.prototype._setSearch = function() {
-	this.controls.search = new Search(this.layers.electReg)
-	this.map.addControl(this.controls.search)
+	this._setSearchEvent(new Search2(this.data.geoJson))
+}
+
+VoteMap.prototype._setSearchEvent = function(search) {
+	const self = this
+	search.bindEvent('selectGeoJson', function(geoJson) {
+		self.map.setView(
+			L.geoJSON(geoJson)
+				.getBounds()
+				.getCenter(),
+			12
+		)
+	})
+
+	search.bindEvent('deleteInput')
 }
 
 export default VoteMap
