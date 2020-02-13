@@ -4,9 +4,9 @@ import VoteMap from './js/votemap'
 import counter from './js/counter'
 import menu from './js/menu'
 
-const global = {}
-
 function main() {
+	const global = {}
+
 	// 카운터 실행
 	counter('d-day')
 
