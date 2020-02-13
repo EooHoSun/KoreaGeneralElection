@@ -315,9 +315,10 @@ html {
 
 	.v-pre-tbl-header {
 		background-color: rgba(189, 182, 182, 0.8);
+		height: 46px;
 	}
 	.v-pre-tbl-content {
-		height: 145px;
+		height: 182px;
 		overflow-x: auto;
 		margin-top: 0px;
 		border: 3px solid rgba(255, 255, 255, 0.3);
@@ -325,6 +326,11 @@ html {
 	}
 	table {
 		text-align: center;
+		.v-pre-detail-info {
+			display: none;
+			overflow: hidden;
+			transition: max-height 0.2s ease-out;
+		}
 		th {
 			padding: 20px 15px;
 			// text-align: left;
@@ -332,7 +338,23 @@ html {
 			font-size: 14px;
 			color: black;
 			text-transform: uppercase;
+			&:nth-child(2) {
+				width: 20%;
+			}
+			&:nth-child(3) {
+				width: 10%;
+			}
+			&:nth-child(4) {
+				width: 10%;
+			}
+			&:nth-child(5) {
+				width: 30%;
+			}
+			&:nth-last-child() {
+				width: 5%;
+			}
 		}
+
 		td {
 			padding: 15px;
 			// text-align: left;
@@ -342,6 +364,40 @@ html {
 			color: black;
 			border-bottom: solid 2px rgba(255, 255, 255, 0.9);
 			// border: solid 2px rgba(255, 255, 255, 0.1);
+			&:nth-child(2) {
+				width: 20%;
+			}
+			&:nth-child(3) {
+				width: 10%;
+			}
+			&:nth-child(4) {
+				width: 10%;
+			}
+			&:nth-child(5) {
+				width: 30%;
+			}
+			&:nth-last-child() {
+				width: 5%;
+			}
+			button {
+				float: right;
+				background-color: rgba(255, 255, 255, 0.8);
+				color: black;
+				cursor: pointer;
+				border: none;
+				outline: none;
+				font-size: 14px;
+				&:after {
+					content: '\002B';
+					color: black;
+					font-weight: bold;
+					float: right;
+					margin-left: 5px;
+				}
+				&.active:after {
+					content: '\2212';
+				}
+			}
 		}
 	}
 }

@@ -71,14 +71,11 @@ VoteMap.prototype.init = async function init() {
 	// 20대 총선 결과 & 선거구 그리기
 	this._drawElect20Layer()
 
-	// search box 만들기
-	// this._setSearch()
-
 	return this.map
 }
 
 // 메뉴 별 layer Change
-VoteMap.prototype.changeLayer = function(layer) {
+VoteMap.prototype.changeLayer = function(layer, menuName) {
 	// 선택한 레이어 올리기 (없을 경우만)
 	if (!this.map.hasLayer(layer)) {
 		layer.addTo(this.map)
@@ -91,6 +88,13 @@ VoteMap.prototype.changeLayer = function(layer) {
 				l.removeFrom(this.map)
 			}
 		})
+
+	if (menuName === 'elect20') {
+		document.getElementById('v-pre').style.display = 'none'
+		document.getElementById('v-last-result').style.display = 'block'
+	} else if (menuName === 'electReg') {
+		document.getElementById('v-last-result').style.display = 'none'
+	}
 }
 
 /**
@@ -219,8 +223,7 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 	// html += '</thead>'
 	html += '<tbody>'
 
-	// eslint-disable-next-line no-plusplus
-	for (let i = 0; i < candidates.length; i++) {
+	for (let i = 0; i < candidates.length; i += 1) {
 		let name = candidates[i].성명
 		name = name.substr(0, name.indexOf('<br'))
 		let addr = candidates[i].주소
@@ -233,18 +236,52 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 		html += ` <td>${name}</td>`
 		html += ` <td>${candidates[i].성별}</td>`
 		html += ` <td>${candidates[i].생년월일.substr(-4, 2)}</td>`
-		html += ` <td>${addr}</td>`
+		html += ` <td>${addr}<button class="v-pre-unfold"></button></td>`
 		// html += ` <td>${candidates[i].직업}</td>`
 		// html += ` <td>${candidates[i].학력}</td>`
 		// html += ` <td>${candidates[i].경력}</td>`
 		// html += ` <td>${candidates[i].전과기록건수}</td>`
 		html += '</tr>'
+		html += '<tr class="v-pre-detail-info"><td colspan="5">'
+		html += `직업 : ${candidates[i].직업}<br>`
+		html += `학력 : ${candidates[i].학력}<br>`
+		html += `경력 : ${candidates[i].경력}<br>`
+		html += `전과기록건수 : ${candidates[i].전과기록건수}<br>`
+		html += '</td></tr>'
 	}
 	html += '</tbody>'
 	html += '</table>'
 
 	const tableContents = createElementFromHTML(html)
 	document.getElementsByClassName('v-pre-tbl-content')[0].append(tableContents)
+
+	const acc = document.getElementsByClassName('v-pre-unfold')
+	let i
+	// for (i = 0; i < acc.length; i += 1) {
+	// 	acc[i].addEventListener('click', self._openPreCandDetailInfo(acc[i]))
+	// }
+	for (i = 0; i < acc.length; i += 1) {
+		acc[i].onclick = function() {
+			console.log(this)
+			this.classList.toggle('active')
+			const panel = this.parentElement.parentElement.nextElementSibling
+			if (panel.style.display === 'contents') {
+				panel.style.display = 'none'
+			} else {
+				panel.style.display = 'contents'
+			}
+		}
+	}
+}
+
+VoteMap.prototype._openPreCandDetailInfo = function(button) {
+	button.classList.toggle('active')
+	const detailInfo = button.parentElement.parentElement.nextElementSibling
+	if (detailInfo.style.maxHeight) {
+		detailInfo.style.maxHeight = null
+	} else {
+		detailInfo.style.maxHeight = `${detailInfo.scrollHeight}px`
+	}
 }
 
 /**
@@ -279,14 +316,6 @@ VoteMap.prototype._drawElect20Layer = function() {
 		},
 		{ opacity: 1, className: 'v-elected-tooltip' }
 	)
-}
-
-/**
- * search box 만들기
- */
-VoteMap.prototype._setSearch = function() {
-	this.controls.search = new Search(this.layers.electReg)
-	this.map.addControl(this.controls.search)
 }
 
 export default VoteMap
