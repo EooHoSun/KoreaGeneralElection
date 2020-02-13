@@ -277,17 +277,21 @@ VoteMap.prototype._drawElect20Layer = function() {
  * search box 만들기
  */
 VoteMap.prototype._setSearch = function() {
-	// this.controls.search = new Search(this.layers.elect20)
-	// this.map.addControl(this.controls.search)
-	// eslint-disable-next-line no-new
 	this._setSearchEvent(new Search2(this.data.geoJson))
 }
 
 VoteMap.prototype._setSearchEvent = function(search) {
 	const self = this
 	search.bindEvent('selectGeoJson', function(geoJson) {
-		self.map.setView(L.geoJSON(geoJson).getBounds().getCenter(), 12)
+		self.map.setView(
+			L.geoJSON(geoJson)
+				.getBounds()
+				.getCenter(),
+			12
+		)
 	})
+
+	search.bindEvent('deleteInput')
 }
 
 export default VoteMap
