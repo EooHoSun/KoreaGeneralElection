@@ -1,4 +1,5 @@
 const lastResultEl = document.getElementById('v-last-result')
+const preCandEl = document.getElementById('v-pre-cand')
 const sToggleBtn = document.getElementById('v-sidebar-toggle')
 
 function toggleSidebar() {
@@ -10,13 +11,20 @@ function toggleSidebar() {
 
 function closeInfo() {
 	lastResultEl.style.display = 'none'
+	preCandEl.style.display = 'none'
 }
 
 function openInfo() {
 	lastResultEl.style.display = 'block'
 }
 
-function menu() {
+function changeLayer(mapObj, clickedMenu) {
+	mapObj.changeLayer(clickedMenu)
+}
+
+function menu(global) {
+	const { mapObj } = global
+
 	// 사이드바 토글 클릭 이벤트
 	sToggleBtn.addEventListener('click', toggleSidebar)
 
@@ -27,10 +35,21 @@ function menu() {
 	document.getElementById('get-last-result-btn').addEventListener('click', function() {
 		openInfo()
 		toggleSidebar()
+		changeLayer(mapObj, 'elect20')
+	})
+
+	// 선거구 영역 보기
+	document.getElementById('get-electReg-btn').addEventListener('click', function() {
+		closeInfo()
+		toggleSidebar()
+		changeLayer(mapObj, 'electReg')
 	})
 
 	// 정보 조회 닫기 버튼
 	document.getElementById('v-last-result-close').addEventListener('click', closeInfo)
+
+	// 정보 조회 닫기 버튼
+	document.getElementById('v-pre-cand-close').addEventListener('click', closeInfo)
 }
 
 export default menu

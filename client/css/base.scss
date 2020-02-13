@@ -297,3 +297,52 @@ html {
 		}
 	}
 }
+
+//예비후보자 목록
+#v-pre-cand {
+	display: none;
+	position: absolute;
+	left: 20px;
+	bottom: 20px;
+}
+
+.v-pre-cand-info {
+	$border: 1px solid #e7e7e7;
+	max-width: 100%;
+	background-color: #fff;
+	table-layout: fixed;
+	border-collapse: separate;
+	border-spacing: 0;
+	border-top: $border;
+	border-left: $border;
+	thead {
+		text-align: center;
+	}
+	th,
+	td {
+		padding: 5px;
+		border-bottom: $border;
+		border-right: $border;
+	}
+}
+@media (min-width: $breakpoint-xs + 100px + 40px) {
+	.v-pre-cand-info {
+		min-width: $breakpoint-xs + 100px;
+	}
+}
+@media (max-width: $breakpoint-xs + 100px + 40px) {
+	#v-last-result {
+		left: 0;
+		bottom: 0;
+	}
+	.v-pre-cand {
+		width: 100%;
+		thead {
+			tr {
+				th:first-child {
+					width: 95px;
+				}
+			}
+		}
+	}
+}
