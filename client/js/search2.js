@@ -1,71 +1,58 @@
-import autocomplete from '@tarekraafat/autocomplete.js'
+import autocomplete from 'autocompleter'
 
 /**
  * Search 정의
  *
  */
 function Search2(data) {
-	this.input = {}
-	this.data = {}
-	return this.init(data)
-}
-Search2.prototype.init = function(data) {
+	this.elements = {
+		input: null,
+		ul: null,
+	}
 	this.data = data
+	this.texts = data.getLayers().map(element => element.feature.properties.elect_cd)
+	this.init()
+}
+Search2.prototype.init = function() {
+	const self = this
+	this.elements.input = document.querySelector('#v-search-input')
+	this.elements.ul = document.querySelector('#v-search-ul')
 	autocomplete({
-		data: {
-			// Data src [Array, Function, Async] | (REQUIRED)
-			src: data,
-			cache: false,
-		},
-		query: {
-			// Query Interceptor               | (Optional)
-			manipulate: query => {
-				return query.replace('pizza', 'burger')
-			},
-		},
-		sort: (a, b) => {
-			// Sort rendered results ascendingly | (Optional)
-			if (a.match < b.match) return -1
-			if (a.match > b.match) return 1
-			return 0
-		},
-		placeHolder: 'Food & Drinks...', // Place Holder text                 | (Optional)
-		selector: '#autoComplete', // Input field selector              | (Optional)
-		threshold: 3, // Min. Chars length to start Engine | (Optional)
-		debounce: 300, // Post duration for engine to start | (Optional)
-		searchEngine: 'strict', // Search Engine type/mode           | (Optional)
-		resultsList: {
-			// Rendered results list object      | (Optional)
-			render: true,
-			container: source => {
-				source.setAttribute('id', 'food_list')
-			},
-			destination: document.querySelector('#autoComplete'),
-			position: 'afterend',
-			element: 'ul',
-		},
-		maxResults: 5, // Max. number of rendered results | (Optional)
-		highlight: true, // Highlight matching results      | (Optional)
-		resultItem: {
-			// Rendered result item            | (Optional)
-			content: (data, source) => {
-				
-			},
-			element: 'li',
-		},
-		noResults: () => {
-			// Action script on noResults      | (Optional)
-			const result = document.createElement('li')
-			result.setAttribute('class', 'no_result')
-			result.setAttribute('tabindex', '1')
-			result.innerHTML = 'No Results'
-			document.querySelector('#autoComplete_list').appendChild(result)
-		},
-		onSelection: feedback => {
-			// Action script onSelection event | (Optional)
-			console.log(feedback.selection.value.image_url)
+		input: this.elements.input,
+		fetch(text, update) {
+			text = text.toLowerCase()
+			// you can also use AJAX requests instead of preloaded data
+			const suggestions = self.texts.filter(n => n.toLowerCase().indexOf(text) > -1)
+			self.setLi(suggestions)
 		},
 	})
 }
 
+Search2.prototype.setLi = function(list) {
+	let html = ''
+	// eslint-disable-next-line array-callback-return
+	list.map(function(text) {
+		html += '<li class="v-search-li">' + text + '</li>'
+	})
+	this.elements.ul.innerHTML = html
+}
+
+Search2.prototype.eventHandler = function(eventName, event) {
+	const self = this
+
+	if (eventName === 'selectGeoJson') {
+		this.elements.ul.onclick = function(e) {
+			if (!e.target.className === 'v-search-li') return
+			event(
+				self.data
+					.getLayers()
+					.filter(
+						element => element.feature.properties.elect_cd === e.target.textContent
+					)[0]
+			)
+		}
+	}
+}
+
+Search2.prototype.bindEvent = function() {}
 export default Search2
