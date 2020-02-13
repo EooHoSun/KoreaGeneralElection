@@ -1,16 +1,14 @@
-import candidate from './candidates'
 /**
  * Search 정의
  *
  */
-console.log({candidate})
 function Search2(data) {
 	this.elements = {
 		input: document.querySelector('#v-search-input'),
 		ul: document.querySelector('#v-search-ul'),
 	}
 	this.data = data
-	this.texts = data.getLayers().map(element => element.feature.properties.elect_cd)
+	this.texts = data.features.map(element => element.properties.elect_cd)
 	this.init()
 }
 Search2.prototype.init = function() {
@@ -41,11 +39,9 @@ Search2.prototype.bindEvent = function(eventName, event) {
 		this.elements.ul.onclick = function(e) {
 			if (!e.target.className === 'v-search-li') return
 			event(
-				self.data
-					.getLayers()
-					.filter(
-						element => element.feature.properties.elect_cd === e.target.textContent
-					)[0]
+				self.data.features.filter(
+					element => element.properties.elect_cd === e.target.textContent
+				)[0]
 			)
 		}
 	}
