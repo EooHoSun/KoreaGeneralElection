@@ -28,6 +28,7 @@ function VoteMap(mapId) {
 	this.layers = {}
 	this.markers = {}
 	this.controls = {}
+	this.data = null
 
 	this.init()
 }
@@ -59,15 +60,28 @@ VoteMap.prototype.init = async function init() {
 	// 내위치찾기 버튼 생성
 	this._createGeolocButton()
 
-	// 20대 선거구 그리기
-	await this._drawElect20Layer()
+	// default 선거구 그리기
+	await this._drawElectRegLayer()
+
+	// 20대 총선 결과 그리기
+	this._drawElect20Layer()
 
 	// search box 만들기
-	this._setSearch()
+	// this._setSearch()
 
 	return this.map
 }
 
+// 메뉴 별 layer Change
+VoteMap.prototype.changeLayer = function(clickedMenu) {
+	const self = this
+	this.map.eachLayer(function(layer) {
+		if (layer.options.pane === 'overlayPane') {
+			self.map.removeLayer(layer)
+		}
+	})
+	this.layers[clickedMenu].addTo(this.map)
+}
 /**
  * 내위치찾기 버튼 생성
  */
@@ -125,14 +139,41 @@ VoteMap.prototype._createGeolocButton = function() {
 }
 
 /**
- * 20대 선거구 그리기
+ * 선거구 그리기
  */
-VoteMap.prototype._drawElect20Layer = async function() {
+VoteMap.prototype._drawElectRegLayer = async function() {
 	const { data } = await axios.get('/api/data?type=20')
+	this.data = data
 
-	this.layers.elect20 = L.geoJSON(data.geoJson, {
+	this.layers.electReg = L.geoJSON(this.data.geoJson, {
+		style: {
+			weight: 1,
+			color: '#892da7',
+			fillOpacity: 0.1,
+		},
+	}).bindTooltip(
+		layer => {
+			const elected = this.data.elected.find(
+				x => x.elect_cd === layer.feature.properties.elect_cd
+			)
+			if (!elected) return '<strong>선거구 없음</strong>'
+			return `<p><strong>선거구 : </strong>${elected.sungugu}</p>`
+		},
+		{ opacity: 1, className: 'v-elected-tooltip' }
+	)
+
+	// this.layers.electReg.addTo(this.map)
+}
+
+/**
+ * 20대 선거결과 그리기
+ */
+VoteMap.prototype._drawElect20Layer = function() {
+	const self = this
+
+	this.layers.elect20 = L.geoJSON(self.data.geoJson, {
 		style(feature) {
-			const elected = data.elected.find(x => x.elect_cd === feature.properties.elect_cd)
+			const elected = self.data.elected.find(x => x.elect_cd === feature.properties.elect_cd)
 			const party = elected ? elected.party : ''
 			return {
 				weight: 1,
@@ -142,7 +183,9 @@ VoteMap.prototype._drawElect20Layer = async function() {
 		},
 	}).bindTooltip(
 		layer => {
-			const elected = data.elected.find(x => x.elect_cd === layer.feature.properties.elect_cd)
+			const elected = self.data.elected.find(
+				x => x.elect_cd === layer.feature.properties.elect_cd
+			)
 			if (!elected) return '<strong>선거구 없음</strong>'
 			return (
 				// `<p><strong>행정동 : </strong>${layer.feature.properties.adm_nm}</p>` +
@@ -153,15 +196,13 @@ VoteMap.prototype._drawElect20Layer = async function() {
 		},
 		{ opacity: 1, className: 'v-elected-tooltip' }
 	)
-
-	this.layers.elect20.addTo(this.map)
 }
 
 /**
  * search box 만들기
  */
 VoteMap.prototype._setSearch = function() {
-	this.controls.search = new Search(this.layers.elect20)
+	this.controls.search = new Search(this.layers.electReg)
 	this.map.addControl(this.controls.search)
 }
 

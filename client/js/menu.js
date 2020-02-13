@@ -16,7 +16,13 @@ function openInfo() {
 	lastResultEl.style.display = 'block'
 }
 
-function menu() {
+function changeLayer(mapObj, clickedMenu) {
+	mapObj.changeLayer(clickedMenu)
+}
+
+function menu(global) {
+	const { mapObj } = global
+
 	// 사이드바 토글 클릭 이벤트
 	sToggleBtn.addEventListener('click', toggleSidebar)
 
@@ -27,6 +33,14 @@ function menu() {
 	document.getElementById('get-last-result-btn').addEventListener('click', function() {
 		openInfo()
 		toggleSidebar()
+		changeLayer(mapObj, 'elect20')
+	})
+
+	// 선거구 영역 보기
+	document.getElementById('electReg').addEventListener('click', function() {
+		closeInfo()
+		toggleSidebar()
+		changeLayer(mapObj, 'electReg')
 	})
 
 	// 정보 조회 닫기 버튼
