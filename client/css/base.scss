@@ -368,14 +368,11 @@ html {
 		}
 
 		td {
-			padding: 15px;
-			// text-align: left;
 			vertical-align: middle;
 			font-weight: 300;
 			font-size: 14px;
 			color: black;
 			border-bottom: solid 2px rgba(255, 255, 255, 0.9);
-			// border: solid 2px rgba(255, 255, 255, 0.1);
 			&:nth-child(2) {
 				width: 20%;
 			}
