@@ -165,7 +165,7 @@ VoteMap.prototype._drawElectRegLayer = function() {
 		onEachFeature(feature, layer) {
 			// bind click
 			layer.on('click', () => {
-				document.getElementById('v-pre-cand').style.display = 'block'
+				document.getElementById('v-pre').style.display = 'block'
 				self._makePreCandidateInfo(feature.properties.elect_cd)
 			})
 		},
@@ -192,33 +192,31 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 	const { candidates } = data
 	console.log(candidates)
 
-	// var introText = document.createTextNode('Hello');
-	// name.appendChild(nameText);
-
-	if (document.getElementsByClassName('v-pre-cand-reg')[0].innerText !== '') {
-		document.getElementsByClassName('v-pre-cand-reg')[0].innerText = ''
-		document.getElementsByClassName('v-pre-cand-info')[0].remove()
+	// 기존 table contents 삭제
+	if (document.getElementsByClassName('v-pre-reg')[0].innerText !== '') {
+		document.getElementsByClassName('v-pre-reg')[0].innerText = ''
+		document.getElementsByClassName('v-pre-tbl')[1].remove() // table contents 지움
 	}
+
 	document.getElementsByClassName(
-		'v-pre-cand-reg'
+		'v-pre-reg'
 	)[0].innerText = `${candidates[0].선거구명}  (2020.02.12.23:00기준)`
-	// const electRegHtml = `<div>${candidates[0].선거구명}</div>`
-	// const electRegInfo = createElementFromHTML(electRegHtml)
-	// const outDiv = document.getElementById('v-pre-cand').append(electRegInfo)
-	let html = '<table class="v-pre-cand-info">'
-	html += '<thead>'
-	html += ' <tr>'
-	html += '  <td>소속정당</td>'
-	html += '  <td>성명</td>'
-	html += '  <td>성별</td>'
-	html += '  <td>나이</td>'
-	html += '  <td>주소</td>'
+
+	// table contents
+	let html = '<table class="v-pre-tbl">'
+	// html += '<thead>'
+	// html += ' <tr>'
+	// html += '  <td>소속정당</td>'
+	// html += '  <td>성명</td>'
+	// html += '  <td>성별</td>'
+	// html += '  <td>나이</td>'
+	// html += '  <td>주소</td>'
 	// html += '  <td>직업</td>'
 	// html += '  <td>학력</td>'
 	// html += '  <td>경력</td>'
 	// html += '  <td>전과기록</td>'
-	html += ' </tr>'
-	html += '</thead>'
+	// html += ' </tr>'
+	// html += '</thead>'
 	html += '<tbody>'
 
 	// eslint-disable-next-line no-plusplus
@@ -246,7 +244,7 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 	html += '</table>'
 
 	const tableContents = createElementFromHTML(html)
-	document.getElementById('v-pre-cand').append(tableContents)
+	document.getElementsByClassName('v-pre-tbl-content')[0].append(tableContents)
 }
 
 /**
