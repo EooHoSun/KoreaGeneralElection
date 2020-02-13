@@ -3,6 +3,7 @@ import axios from 'axios'
 import * as L from 'leaflet'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import Search from './search'
+import createElementFromHTML from './util'
 
 /**
  * 정당 & 레이어 색상
@@ -75,6 +76,7 @@ VoteMap.prototype.init = async function init() {
 // 메뉴 별 layer Change
 VoteMap.prototype.changeLayer = function(clickedMenu) {
 	const self = this
+	/** TO-DO overlays로 지우기 */
 	this.map.eachLayer(function(layer) {
 		if (layer.options.pane === 'overlayPane') {
 			self.map.removeLayer(layer)
@@ -139,9 +141,10 @@ VoteMap.prototype._createGeolocButton = function() {
 }
 
 /**
- * 선거구 그리기
+ * default 선거구 그리기
  */
 VoteMap.prototype._drawElectRegLayer = async function() {
+	const self = this
 	const { data } = await axios.get('/api/data?type=20')
 	this.data = data
 
@@ -152,18 +155,88 @@ VoteMap.prototype._drawElectRegLayer = async function() {
 			fillOpacity: 0.1,
 			className: 'data-layer',
 		},
+		onEachFeature(feature, layer) {
+			// bind click
+			layer.on({
+				click(e) {
+					document.getElementById('v-pre-cand').style.display = 'block'
+					self._makePreCandidateInfo(layer.feature.properties.elect_cd)
+				},
+			})
+		},
 	}).bindTooltip(
 		layer => {
 			const elected = this.data.elected.find(
 				x => x.elect_cd === layer.feature.properties.elect_cd
 			)
 			if (!elected) return '<strong>선거구 없음</strong>'
-			return `<p><strong>선거구 : </strong>${elected.sungugu}</p>`
+			return (
+				`<p><strong>선거구 : </strong>${elected.sungugu}</p>` +
+				'<p><small>클릭하면 예비후보자 조회가 가능합니다</small></p>'
+			)
 		},
 		{ opacity: 1, className: 'v-elected-tooltip' }
 	)
 
-	// this.layers.electReg.addTo(this.map)
+	this.layers.electReg.addTo(this.map)
+}
+
+/**
+ * 21대 총선 예비후보자 정보 출력
+ */
+VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
+	const { data } = await axios.get(`/api/preCand?electCd=${electCd}`)
+	const { candidates } = data
+	console.log(candidates)
+
+	// var introText = document.createTextNode('Hello');
+	// name.appendChild(nameText);
+
+	if (document.getElementsByClassName('v-pre-cand-reg')[0].innerText !== '') {
+		document.getElementsByClassName('v-pre-cand-reg')[0].innerText = ''
+		document.getElementsByClassName('v-pre-cand-info')[0].remove()
+	}
+	document.getElementsByClassName(
+		'v-pre-cand-reg'
+	)[0].innerText = `${candidates[0].선거구명}  (2020.02.12.23:00기준)`
+	// const electRegHtml = `<div>${candidates[0].선거구명}</div>`
+	// const electRegInfo = createElementFromHTML(electRegHtml)
+	// const outDiv = document.getElementById('v-pre-cand').append(electRegInfo)
+	let html = '<table class="v-pre-cand-info">'
+	html += '<thead>'
+	html += ' <tr>'
+	html += '  <td>소속정당</td>'
+	html += '  <td>성명</td>'
+	html += '  <td>성별</td>'
+	html += '  <td>나이</td>'
+	html += '  <td>주소</td>'
+	html += '  <td>직업</td>'
+	html += '  <td>학력</td>'
+	html += '  <td>경력</td>'
+	html += '  <td>전과기록</td>'
+	html += ' </tr>'
+	html += '</thead>'
+	html += '<tbody>'
+
+	// eslint-disable-next-line no-plusplus
+	for (let i = 0; i < candidates.length; i++) {
+		html += '<tr>'
+		html += ` <td>${candidates[i].소속정당}</td>`
+		html += ` <td>${candidates[i].성명}</td>`
+		html += ` <td>${candidates[i].성별}</td>`
+		html += ` <td>${candidates[i].생년월일.substr(-4, 2)}</td>`
+		html += ` <td>${candidates[i].주소}</td>`
+		html += ` <td>${candidates[i].직업}</td>`
+		html += ` <td>${candidates[i].학력}</td>`
+		html += ` <td>${candidates[i].경력}</td>`
+		html += ` <td>${candidates[i].전과기록건수}</td>`
+		html += '</tr>'
+	}
+	html += '</tbody>'
+	html += '</table>'
+
+	const tableContents = createElementFromHTML(html)
+	document.getElementById('v-pre-cand').append(tableContents)
 }
 
 /**
