@@ -67,7 +67,6 @@ VoteMap.prototype.init = async function init() {
 	// 21대 총선 선거구 그리기
 	this._drawElectRegLayer()
 	this.layers.electReg.addTo(this.map) // default
-
 	// 20대 총선 결과 & 선거구 그리기
 	this._drawElect20Layer()
 
@@ -78,7 +77,7 @@ VoteMap.prototype.init = async function init() {
 }
 
 // 메뉴 별 layer Change
-VoteMap.prototype.changeLayer = function(layer) {
+VoteMap.prototype.changeLayer = function(layer, menuName) {
 	// 선택한 레이어 올리기 (없을 경우만)
 	if (!this.map.hasLayer(layer)) {
 		layer.addTo(this.map)
@@ -91,6 +90,13 @@ VoteMap.prototype.changeLayer = function(layer) {
 				l.removeFrom(this.map)
 			}
 		})
+
+	if (menuName === 'elect20') {
+		document.getElementById('v-pre').style.display = 'none'
+		document.getElementById('v-last-result').style.display = 'block'
+	} else if (menuName === 'electReg') {
+		document.getElementById('v-last-result').style.display = 'none'
+	}
 }
 
 /**
@@ -165,7 +171,7 @@ VoteMap.prototype._drawElectRegLayer = function() {
 		onEachFeature(feature, layer) {
 			// bind click
 			layer.on('click', () => {
-				document.getElementById('v-pre-cand').style.display = 'block'
+				document.getElementById('v-pre').style.display = 'block'
 				self._makePreCandidateInfo(feature.properties.elect_cd)
 			})
 		},
@@ -192,54 +198,92 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 	const { candidates } = data
 	console.log(candidates)
 
-	// var introText = document.createTextNode('Hello');
-	// name.appendChild(nameText);
-
-	if (document.getElementsByClassName('v-pre-cand-reg')[0].innerText !== '') {
-		document.getElementsByClassName('v-pre-cand-reg')[0].innerText = ''
-		document.getElementsByClassName('v-pre-cand-info')[0].remove()
+	// 기존 table contents 삭제
+	if (document.getElementsByClassName('v-pre-reg')[0].innerText !== '') {
+		document.getElementsByClassName('v-pre-reg')[0].innerText = ''
+		document.getElementsByClassName('v-pre-tbl')[1].remove() // table contents 지움
 	}
+
 	document.getElementsByClassName(
-		'v-pre-cand-reg'
+		'v-pre-reg'
 	)[0].innerText = `${candidates[0].선거구명}  (2020.02.12.23:00기준)`
-	// const electRegHtml = `<div>${candidates[0].선거구명}</div>`
-	// const electRegInfo = createElementFromHTML(electRegHtml)
-	// const outDiv = document.getElementById('v-pre-cand').append(electRegInfo)
-	let html = '<table class="v-pre-cand-info">'
-	html += '<thead>'
-	html += ' <tr>'
-	html += '  <td>소속정당</td>'
-	html += '  <td>성명</td>'
-	html += '  <td>성별</td>'
-	html += '  <td>나이</td>'
-	html += '  <td>주소</td>'
-	html += '  <td>직업</td>'
-	html += '  <td>학력</td>'
-	html += '  <td>경력</td>'
-	html += '  <td>전과기록</td>'
-	html += ' </tr>'
-	html += '</thead>'
+
+	// table contents
+	let html = '<table class="v-pre-tbl">'
+	// html += '<thead>'
+	// html += ' <tr>'
+	// html += '  <td>소속정당</td>'
+	// html += '  <td>성명</td>'
+	// html += '  <td>성별</td>'
+	// html += '  <td>나이</td>'
+	// html += '  <td>주소</td>'
+	// html += '  <td>직업</td>'
+	// html += '  <td>학력</td>'
+	// html += '  <td>경력</td>'
+	// html += '  <td>전과기록</td>'
+	// html += ' </tr>'
+	// html += '</thead>'
 	html += '<tbody>'
 
-	// eslint-disable-next-line no-plusplus
-	for (let i = 0; i < candidates.length; i++) {
+	for (let i = 0; i < candidates.length; i += 1) {
+		let name = candidates[i].성명
+		name = name.substr(0, name.indexOf('<br'))
+		let addr = candidates[i].주소
+		const addrArr = addr.split(' ')
+		if (addrArr.length > 2) {
+			addr = `${addrArr[0]} ${addrArr[1]} ${addrArr[2]}`
+		}
 		html += '<tr>'
 		html += ` <td>${candidates[i].소속정당}</td>`
-		html += ` <td>${candidates[i].성명}</td>`
+		html += ` <td>${name}</td>`
 		html += ` <td>${candidates[i].성별}</td>`
 		html += ` <td>${candidates[i].생년월일.substr(-4, 2)}</td>`
-		html += ` <td>${candidates[i].주소}</td>`
-		html += ` <td>${candidates[i].직업}</td>`
-		html += ` <td>${candidates[i].학력}</td>`
-		html += ` <td>${candidates[i].경력}</td>`
-		html += ` <td>${candidates[i].전과기록건수}</td>`
+		html += ` <td>${addr}<button class="v-pre-unfold"></button></td>`
+		// html += ` <td>${candidates[i].직업}</td>`
+		// html += ` <td>${candidates[i].학력}</td>`
+		// html += ` <td>${candidates[i].경력}</td>`
+		// html += ` <td>${candidates[i].전과기록건수}</td>`
 		html += '</tr>'
+		html += '<tr class="v-pre-detail-info"><td colspan="5">'
+		html += `직업 : ${candidates[i].직업}<br>`
+		html += `학력 : ${candidates[i].학력}<br>`
+		html += `경력 : ${candidates[i].경력}<br>`
+		html += `전과기록건수 : ${candidates[i].전과기록건수}<br>`
+		html += '</td></tr>'
 	}
 	html += '</tbody>'
 	html += '</table>'
 
 	const tableContents = createElementFromHTML(html)
-	document.getElementById('v-pre-cand').append(tableContents)
+	document.getElementsByClassName('v-pre-tbl-content')[0].append(tableContents)
+
+	const acc = document.getElementsByClassName('v-pre-unfold')
+	let i
+	// for (i = 0; i < acc.length; i += 1) {
+	// 	acc[i].addEventListener('click', self._openPreCandDetailInfo(acc[i]))
+	// }
+	for (i = 0; i < acc.length; i += 1) {
+		acc[i].onclick = function() {
+			console.log(this)
+			this.classList.toggle('active')
+			const panel = this.parentElement.parentElement.nextElementSibling
+			if (panel.style.display === 'contents') {
+				panel.style.display = 'none'
+			} else {
+				panel.style.display = 'contents'
+			}
+		}
+	}
+}
+
+VoteMap.prototype._openPreCandDetailInfo = function(button) {
+	button.classList.toggle('active')
+	const detailInfo = button.parentElement.parentElement.nextElementSibling
+	if (detailInfo.style.maxHeight) {
+		detailInfo.style.maxHeight = null
+	} else {
+		detailInfo.style.maxHeight = `${detailInfo.scrollHeight}px`
+	}
 }
 
 /**
@@ -276,9 +320,6 @@ VoteMap.prototype._drawElect20Layer = function() {
 	)
 }
 
-/**
- * search box 만들기
- */
 VoteMap.prototype._setSearch = function() {
 	this._setSearchEvent(new Search2(this.data.geoJson))
 }

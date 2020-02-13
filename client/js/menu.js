@@ -12,7 +12,7 @@ function toggleSidebar() {
 // function closeInfo() {
 // 	lastResultEl.style.display = 'none'
 // 	preCandEl.style.display = 'none'
-// }
+// }c
 
 // function openInfo() {
 // 	lastResultEl.style.display = 'block'
@@ -29,14 +29,14 @@ function menu({ mapObj }) {
 	document.getElementById('get-electReg-btn').addEventListener('click', function() {
 		// closeInfo() // TODO: 레이어 의존으로 변경
 		toggleSidebar()
-		mapObj.changeLayer(mapObj.layers.electReg)
+		mapObj.changeLayer(mapObj.layers.electReg, 'electReg')
 	})
 
 	// 메뉴2: 20대 총선 결과 선택
 	document.getElementById('get-elect20-btn').addEventListener('click', function() {
 		// openInfo() // TODO: 레이어 의존으로 변경
 		toggleSidebar()
-		mapObj.changeLayer(mapObj.layers.elect20)
+		mapObj.changeLayer(mapObj.layers.elect20, 'elect20')
 	})
 
 	// TODO: 레이어 의존으로 변경

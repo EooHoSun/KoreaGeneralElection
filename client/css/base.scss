@@ -7,6 +7,17 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500&display=swap&subset=korean');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css');
 
+/* for custom scrollbar for webkit browser*/
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
 html,
 body {
 	width: 100%;
@@ -299,38 +310,136 @@ html {
 	}
 }
 
+//예비후보자 목록
+#v-pre {
+	display: none;
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	.v-pre-reg {
+		background-color: rgba(189, 182, 182, 0.8);
+		text-align: right;
+	}
+	.v-pre-tbl {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	.v-pre-tbl-header {
+		background-color: rgba(189, 182, 182, 0.8);
+		height: 46px;
+	}
+	.v-pre-tbl-content {
+		height: 182px;
+		overflow-x: auto;
+		margin-top: 0px;
+		border: 3px solid rgba(255, 255, 255, 0.3);
+		background-color: rgba(255, 255, 255, 0.8);
+	}
+	table {
+		text-align: center;
+		.v-pre-detail-info {
+			display: none;
+			overflow: hidden;
+			transition: max-height 0.2s ease-out;
+		}
+		th {
+			padding: 20px 15px;
+			// text-align: left;
+			font-weight: 500;
+			font-size: 14px;
+			color: black;
+			text-transform: uppercase;
+			&:nth-child(2) {
+				width: 20%;
+			}
+			&:nth-child(3) {
+				width: 10%;
+			}
+			&:nth-child(4) {
+				width: 10%;
+			}
+			&:nth-child(5) {
+				width: 30%;
+			}
+			&:nth-last-child() {
+				width: 5%;
+			}
+		}
+
+		td {
+			vertical-align: middle;
+			font-weight: 300;
+			font-size: 14px;
+			color: black;
+			border-bottom: solid 2px rgba(255, 255, 255, 0.9);
+			&:nth-child(2) {
+				width: 20%;
+			}
+			&:nth-child(3) {
+				width: 10%;
+			}
+			&:nth-child(4) {
+				width: 10%;
+			}
+			&:nth-child(5) {
+				width: 30%;
+			}
+			&:nth-last-child() {
+				width: 5%;
+			}
+			button {
+				float: right;
+				background-color: rgba(255, 255, 255, 0.8);
+				color: black;
+				cursor: pointer;
+				border: none;
+				outline: none;
+				font-size: 14px;
+				&:after {
+					content: '\002B';
+					color: black;
+					font-weight: bold;
+					float: right;
+					margin-left: 5px;
+				}
+				&.active:after {
+					content: '\2212';
+				}
+			}
+		}
+	}
+}
 /**
 *	search css
 */
-.v-search{
-	.v-search-box{
-		border:  1px solid black;
+.v-search {
+	.v-search-box {
+		border: 1px solid black;
 		margin-bottom: 30px;
-		.v-search-input{
+		.v-search-input {
 			float: left;
 			border: none;
 		}
-		.v-search-span{
+		.v-search-span {
 			cursor: pointer;
 			border: none;
 		}
 	}
 
-
-	.v-search-ul{
+	.v-search-ul {
 		max-height: 500px;
 		overflow-y: scroll;
 		list-style: none;
 		padding-left: 0px;
-		border-color : 1px solid black;
-		.v-search-li{
+		border-color: 1px solid black;
+		.v-search-li {
 			text-align: left;
 			cursor: pointer;
-			
 		}
-		.v-search-li:hover{
+		.v-search-li:hover {
 			background-color: gray;
-			color:white;
+			color: white;
 		}
 	}
 }
