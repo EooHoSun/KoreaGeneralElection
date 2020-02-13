@@ -170,7 +170,7 @@ VoteMap.prototype._setSearch = function() {
 
 VoteMap.prototype._setSearchEvent = function(search) {
 	const self = this
-	search.eventHandler('selectGeoJson', function(geoJson) {
+	search.bindEvent('selectGeoJson', function(geoJson) {
 		self.map.setView(geoJson.getCenter(), 12)
 	})
 }
