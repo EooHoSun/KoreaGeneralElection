@@ -3,7 +3,7 @@ import axios from 'axios'
 import * as L from 'leaflet'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import Search from './search'
-import createElementFromHTML from './util'
+import { createElementFromHTML } from './util'
 
 /**
  * 정당 & 레이어 색상
@@ -38,6 +38,9 @@ function VoteMap(mapId) {
  * init VoteMap
  */
 VoteMap.prototype.init = async function init() {
+	const { data } = await axios.get('/api/data?type=20')
+	this.data = data
+
 	const zoom = 7 // init zoom
 	const center = L.latLng(36.1358642, 128.0785804) // init center
 
@@ -61,10 +64,11 @@ VoteMap.prototype.init = async function init() {
 	// 내위치찾기 버튼 생성
 	this._createGeolocButton()
 
-	// default 선거구 그리기
-	await this._drawElectRegLayer()
+	// 21대 총선 선거구 그리기
+	this._drawElectRegLayer()
+	this.layers.electReg.addTo(this.map) // default
 
-	// 20대 총선 결과 그리기
+	// 20대 총선 결과 & 선거구 그리기
 	this._drawElect20Layer()
 
 	// search box 만들기
@@ -74,16 +78,21 @@ VoteMap.prototype.init = async function init() {
 }
 
 // 메뉴 별 layer Change
-VoteMap.prototype.changeLayer = function(clickedMenu) {
-	const self = this
-	/** TO-DO overlays로 지우기 */
-	this.map.eachLayer(function(layer) {
-		if (layer.options.pane === 'overlayPane') {
-			self.map.removeLayer(layer)
-		}
-	})
-	this.layers[clickedMenu].addTo(this.map)
+VoteMap.prototype.changeLayer = function(layer) {
+	// 선택한 레이어 올리기 (없을 경우만)
+	if (!this.map.hasLayer(layer)) {
+		layer.addTo(this.map)
+	}
+	// 그 외 레이어 지우기 (있을 경우만)
+	Object.values(this.layers)
+		.filter(l => l !== layer)
+		.forEach(l => {
+			if (this.map.hasLayer(l)) {
+				l.removeFrom(this.map)
+			}
+		})
 }
+
 /**
  * 내위치찾기 버튼 생성
  */
@@ -141,12 +150,10 @@ VoteMap.prototype._createGeolocButton = function() {
 }
 
 /**
- * default 선거구 그리기
+ * 21대 총선 선거구 그리기
  */
-VoteMap.prototype._drawElectRegLayer = async function() {
+VoteMap.prototype._drawElectRegLayer = function() {
 	const self = this
-	const { data } = await axios.get('/api/data?type=20')
-	this.data = data
 
 	this.layers.electReg = L.geoJSON(this.data.geoJson, {
 		style: {
@@ -157,11 +164,9 @@ VoteMap.prototype._drawElectRegLayer = async function() {
 		},
 		onEachFeature(feature, layer) {
 			// bind click
-			layer.on({
-				click(e) {
-					document.getElementById('v-pre-cand').style.display = 'block'
-					self._makePreCandidateInfo(layer.feature.properties.elect_cd)
-				},
+			layer.on('click', () => {
+				document.getElementById('v-pre-cand').style.display = 'block'
+				self._makePreCandidateInfo(feature.properties.elect_cd)
 			})
 		},
 	}).bindTooltip(
@@ -177,8 +182,6 @@ VoteMap.prototype._drawElectRegLayer = async function() {
 		},
 		{ opacity: 1, className: 'v-elected-tooltip' }
 	)
-
-	this.layers.electReg.addTo(this.map)
 }
 
 /**
@@ -247,7 +250,7 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 }
 
 /**
- * 20대 선거결과 그리기
+ * 20대 선거구 & 결과 그리기
  */
 VoteMap.prototype._drawElect20Layer = function() {
 	const self = this
