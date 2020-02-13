@@ -150,6 +150,7 @@ VoteMap.prototype._drawElectRegLayer = async function() {
 			weight: 1,
 			color: '#892da7',
 			fillOpacity: 0.1,
+			className: 'data-layer',
 		},
 	}).bindTooltip(
 		layer => {
@@ -179,6 +180,7 @@ VoteMap.prototype._drawElect20Layer = function() {
 				weight: 1,
 				color: PARTY_COLOR.find(x => x.party === party).color,
 				fillOpacity: 0.4,
+				className: 'data-layer',
 			}
 		},
 	}).bindTooltip(
