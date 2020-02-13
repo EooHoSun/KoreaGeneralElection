@@ -159,7 +159,7 @@ $hamburger-height: 46px;
 
 	// 사이드바 하단
 	.v-sidebar-bottom {
-		position: fixed;
+		position: absolute;
 		bottom: 0px;
 		& > div {
 			margin-bottom: 20px;
