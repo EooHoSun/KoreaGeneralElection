@@ -71,12 +71,6 @@ VoteMap.prototype.init = async function init() {
 	// 20대 총선 결과 & 선거구 그리기
 	this._drawElect20Layer()
 
-<<<<<<< HEAD
-=======
-	// search box 만들기
-	this._setSearch()
-
->>>>>>> upstream/master
 	return this.map
 }
 
@@ -324,28 +318,4 @@ VoteMap.prototype._drawElect20Layer = function() {
 	)
 }
 
-<<<<<<< HEAD
-=======
-/**
- * search box 만들기
- */
-VoteMap.prototype._setSearch = function() {
-	this._setSearchEvent(new Search2(this.data.geoJson))
-}
-
-VoteMap.prototype._setSearchEvent = function(search) {
-	const self = this
-	search.bindEvent('selectGeoJson', function(geoJson) {
-		self.map.setView(
-			L.geoJSON(geoJson)
-				.getBounds()
-				.getCenter(),
-			12
-		)
-	})
-
-	search.bindEvent('deleteInput')
-}
-
->>>>>>> upstream/master
 export default VoteMap

@@ -7,6 +7,17 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500&display=swap&subset=korean');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css');
 
+/* for custom scrollbar for webkit browser*/
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
 html,
 body {
 	width: 100%;
@@ -399,50 +410,39 @@ html {
 					content: '\2212';
 				}
 			}
+		}
+	}
+}
 /**
 *	search css
 */
-.v-search{
-	.v-search-box{
-		border:  1px solid black;
+.v-search {
+	.v-search-box {
+		border: 1px solid black;
 		margin-bottom: 30px;
-		.v-search-input{
+		.v-search-input {
 			float: left;
 			border: none;
 		}
-		.v-search-span{
+		.v-search-span {
 			cursor: pointer;
 			border: none;
 		}
 	}
 
-
-	.v-search-ul{
+	.v-search-ul {
 		max-height: 500px;
 		overflow-y: scroll;
 		list-style: none;
 		padding-left: 0px;
-		border-color : 1px solid black;
-		.v-search-li{
+		border-color: 1px solid black;
+		.v-search-li {
 			text-align: left;
 			cursor: pointer;
-			
 		}
-		.v-search-li:hover{
+		.v-search-li:hover {
 			background-color: gray;
-			color:white;
+			color: white;
 		}
 	}
-}
-
-/* for custom scrollbar for webkit browser*/
-
-::-webkit-scrollbar {
-	width: 6px;
-}
-::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-}
-::-webkit-scrollbar-thumb {
-	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
