@@ -67,9 +67,11 @@ VoteMap.prototype.init = async function init() {
 	// 21대 총선 선거구 그리기
 	this._drawElectRegLayer()
 	this.layers.electReg.addTo(this.map) // default
-
 	// 20대 총선 결과 & 선거구 그리기
 	this._drawElect20Layer()
+
+	// search box 만들기
+	this._setSearch()
 
 	return this.map
 }
@@ -316,6 +318,24 @@ VoteMap.prototype._drawElect20Layer = function() {
 		},
 		{ opacity: 1, className: 'v-elected-tooltip' }
 	)
+}
+
+VoteMap.prototype._setSearch = function() {
+	this._setSearchEvent(new Search2(this.data.geoJson))
+}
+
+VoteMap.prototype._setSearchEvent = function(search) {
+	const self = this
+	search.bindEvent('selectGeoJson', function(geoJson) {
+		self.map.setView(
+			L.geoJSON(geoJson)
+				.getBounds()
+				.getCenter(),
+			12
+		)
+	})
+
+	search.bindEvent('deleteInput')
 }
 
 export default VoteMap
