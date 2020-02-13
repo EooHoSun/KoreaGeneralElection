@@ -158,9 +158,13 @@ VoteMap.prototype._drawElect20Layer = async function() {
  * search box 만들기
  */
 VoteMap.prototype._setSearch = async function() {
-	//this.map.addControl(new Search(this.hjd))
+	this.map.addControl(new Search(this.hjd))
 	// eslint-disable-next-line no-new
-	new Search2(this.hjd)
+	// new Search2(
+	// 	this.hjd.toGeoJSON().features.map(function(element) {
+	// 		return element.properties.elect_cd
+	// 	})
+	// )
 }
 
 /**
