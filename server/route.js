@@ -19,15 +19,19 @@ router.get('/data', (req, res) => {
 })
 
 router.get('/preCand', (req, res) => {
-	const sido = req.query.electCd.split('|')[0]
-	const electReg = req.query.electCd.split('|')[1]
-
-	if (allElectRegPreCandidates[sido][electReg]) {
-		res.json({
-			candidates: allElectRegPreCandidates[sido][electReg],
-		})
+	if (req.query.electCd === 'all') {
+		res.json(allElectRegPreCandidates)
 	} else {
-		res.json({})
+		const sido = req.query.electCd.split('|')[0]
+		const electReg = req.query.electCd.split('|')[1]
+
+		if (allElectRegPreCandidates[sido][electReg]) {
+			res.json({
+				candidates: allElectRegPreCandidates[sido][electReg],
+			})
+		} else {
+			res.json({})
+		}
 	}
 })
 
