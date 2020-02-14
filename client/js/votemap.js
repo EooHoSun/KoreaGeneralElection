@@ -94,8 +94,14 @@ VoteMap.prototype.changeLayer = function(layer, menuName) {
 	if (menuName === 'elect20') {
 		document.getElementById('v-pre').style.display = 'none'
 		document.getElementById('v-last-result').style.display = 'block'
+
+		const infoOpenBtn = document.getElementById('v-pre-open')
+		infoOpenBtn.style.display = 'none'
 	} else if (menuName === 'electReg') {
 		document.getElementById('v-last-result').style.display = 'none'
+
+		const infoOpenBtn = document.getElementById('v-last-result-open')
+		infoOpenBtn.style.display = 'none'
 	}
 }
 
@@ -257,11 +263,9 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 	const tableContents = createElementFromHTML(html)
 	document.getElementsByClassName('v-pre-tbl-content')[0].append(tableContents)
 
+	// 상세정보 펼치기 이벤트
 	const acc = document.getElementsByClassName('v-pre-unfold')
 	let i
-	// for (i = 0; i < acc.length; i += 1) {
-	// 	acc[i].addEventListener('click', self._openPreCandDetailInfo(acc[i]))
-	// }
 	for (i = 0; i < acc.length; i += 1) {
 		acc[i].onclick = function() {
 			console.log(this)
@@ -274,16 +278,20 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 			}
 		}
 	}
-}
 
-VoteMap.prototype._openPreCandDetailInfo = function(button) {
-	button.classList.toggle('active')
-	const detailInfo = button.parentElement.parentElement.nextElementSibling
-	if (detailInfo.style.maxHeight) {
-		detailInfo.style.maxHeight = null
-	} else {
-		detailInfo.style.maxHeight = `${detailInfo.scrollHeight}px`
-	}
+	// 예비후보자정보 접기, 펼치기 이벤트
+	const infoOpenBtn = document.getElementById('v-pre-open')
+	const preCloseBtn = document.getElementById('v-pre-close')
+	const vPre = document.getElementById('v-pre')
+
+	preCloseBtn.addEventListener('click', function() {
+		vPre.style.display = 'none'
+		infoOpenBtn.style.display = 'block'
+	})
+	infoOpenBtn.addEventListener('click', function() {
+		vPre.style.display = 'block'
+		infoOpenBtn.style.display = 'none'
+	})
 }
 
 /**
@@ -318,6 +326,20 @@ VoteMap.prototype._drawElect20Layer = function() {
 		},
 		{ opacity: 1, className: 'v-elected-tooltip' }
 	)
+
+	// 20대 총선 결과 정보 접기, 펼치기 이벤트
+	const infoOpenBtn = document.getElementById('v-last-result-open')
+	const lastResultCloseBtn = document.getElementById('v-last-result-close')
+	const vLastResult = document.getElementById('v-last-result')
+
+	lastResultCloseBtn.addEventListener('click', function() {
+		vLastResult.style.display = 'none'
+		infoOpenBtn.style.display = 'block'
+	})
+	infoOpenBtn.addEventListener('click', function() {
+		vLastResult.style.display = 'block'
+		infoOpenBtn.style.display = 'none'
+	})
 }
 
 VoteMap.prototype._setSearch = function() {

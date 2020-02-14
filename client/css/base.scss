@@ -220,19 +220,30 @@ html {
 	font-family: $default-font-family;
 }
 
+//정보 조회 영역 접기, 펼치기 버튼
+
+.fas.fa-angle-down {
+	position: absolute;
+	left: 4px;
+	top: -12px;
+	font-size: 50px;
+	cursor: pointer;
+}
+.fas.fa-angle-up {
+	display: none;
+	position: absolute;
+	left: 4px;
+	bottom: 0;
+	font-size: 50px;
+	cursor: pointer;
+}
+
 // 20대 총선 결과
 #v-last-result {
 	display: none;
 	position: absolute;
 	left: 20px;
 	bottom: 20px;
-}
-#v-last-result-close {
-	position: absolute;
-	left: 0;
-	top: -30px;
-	font-size: 30px;
-	cursor: pointer;
 }
 
 // 20대 총선 정당 색상정보 테이블
