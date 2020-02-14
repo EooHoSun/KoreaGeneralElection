@@ -414,9 +414,12 @@ html {
 *	search css
 */
 .v-search {
+	background-color: white;
+	height : 30%;
+	overflow-y: scroll;
 	.v-search-box {
+		position: absolute;
 		border: 1px solid black;
-		margin-bottom: 30px;
 		.v-search-input {
 			float: left;
 			border: none;
@@ -428,8 +431,7 @@ html {
 	}
 
 	.v-search-ul {
-		max-height: 500px;
-		overflow-y: scroll;
+		margin-top:30px;
 		list-style: none;
 		padding-left: 0px;
 		border-color: 1px solid black;

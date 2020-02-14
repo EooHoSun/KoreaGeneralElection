@@ -21,7 +21,18 @@ Search2.prototype.init = function() {
 		const text = e.target.value.trim().toLowerCase()
 		let suggestions
 		if (text === '') suggestions = []
-		else suggestions = self.texts.filter(n => Hangul.search(n.toLowerCase(), text) > -1)
+		else
+			suggestions = self.texts.filter(function(n) {
+				return (
+					Hangul.search(n.toLowerCase(), text) > -1 ||
+					Hangul.disassemble(n, true)
+						.map(function(s) {
+							return s[0]
+						})
+						.join('')
+						.indexOf(text) > -1
+				)
+			})
 		self.setLi(suggestions)
 	}
 }
