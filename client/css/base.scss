@@ -344,7 +344,7 @@ html {
 			transition: max-height 0.2s ease-out;
 		}
 		th {
-			padding: 20px 15px;
+			padding: 20px 0px;
 			// text-align: left;
 			font-weight: 500;
 			font-size: 14px;
@@ -354,10 +354,10 @@ html {
 				width: 20%;
 			}
 			&:nth-child(3) {
-				width: 10%;
+				width: 12%;
 			}
 			&:nth-child(4) {
-				width: 10%;
+				width: 12%;
 			}
 			&:nth-child(5) {
 				width: 30%;
@@ -377,10 +377,10 @@ html {
 				width: 20%;
 			}
 			&:nth-child(3) {
-				width: 10%;
+				width: 12%;
 			}
 			&:nth-child(4) {
-				width: 10%;
+				width: 12%;
 			}
 			&:nth-child(5) {
 				width: 30%;
@@ -390,7 +390,7 @@ html {
 			}
 			button {
 				float: right;
-				background-color: rgba(255, 255, 255, 0.8);
+				background-color: rgba(255, 255, 255, 0);
 				color: black;
 				cursor: pointer;
 				border: none;
