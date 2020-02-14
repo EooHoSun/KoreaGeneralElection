@@ -431,9 +431,12 @@ html {
 		// border: 1px solid black;
 		// margin-bottom: 30px;
 		border-bottom: 3.3px solid #d0d0d0;
+		display: flex;
 		.v-search-input {
+			width: 175px;
 			float: left;
 			border: none;
+			font-family: 'Noto Sans KR', sans-serif;
 		}
 		.v-search-span {
 			cursor: pointer;
