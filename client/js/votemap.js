@@ -71,7 +71,7 @@ VoteMap.prototype.init = async function init() {
 	this._drawElect20Layer()
 
 	// search box 만들기
-	// this._setSearch()
+	this._setSearch()
 
 	return this.map
 }

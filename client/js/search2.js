@@ -48,10 +48,12 @@ Search2.prototype.bindEvent = function(eventName, event) {
 				event(filteredElectCd[0])
 				self.getCandidateInfo(e.target.textContent)
 			}
+			self.elements.ul.innerHTML = null
 		}
 	} else if (eventName === 'deleteInput') {
 		this.elements.span.onclick = function() {
 			self.elements.input.value = ''
+			self.elements.ul.innerHTML = null
 		}
 	}
 }
