@@ -202,7 +202,10 @@ VoteMap.prototype._drawElectRegLayer = function() {
 VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 	const { data } = await axios.get(`/api/preCand?electCd=${electCd}`)
 	const { candidates } = data
-	console.log(candidates)
+	// console.log(candidates)
+
+	const infoOpenBtn = document.getElementById('v-pre-open')
+	infoOpenBtn.style.display = 'none'
 
 	// 기존 table contents 삭제
 	if (document.getElementsByClassName('v-pre-reg')[0].innerText !== '') {
@@ -280,7 +283,6 @@ VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
 	}
 
 	// 예비후보자정보 접기, 펼치기 이벤트
-	const infoOpenBtn = document.getElementById('v-pre-open')
 	const preCloseBtn = document.getElementById('v-pre-close')
 	const vPre = document.getElementById('v-pre')
 
