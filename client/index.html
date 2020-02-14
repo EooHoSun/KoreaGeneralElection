@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 	<title>4월 총선 알리미</title>
 </head>
 
@@ -70,9 +70,10 @@
 		<div id="v-content">
 			<!-- 맵 -->
 			<div id="v-map"></div>
+			<i id="v-last-result-open"class="fas fa-angle-up"></i>
 			<!-- 20대 총선 결과 -->
 			<div id="v-last-result">
-				<i id="v-last-result-close" class="fas fa-times"></i>
+				<i id="v-last-result-close" class="fas fa-angle-down"></i>
 				<table class="v-last-party-info">
 					<thead>
 						<tr>
@@ -122,8 +123,9 @@
 					</tbody>
 				</table>
 			</div>
+			<i id="v-pre-open" class="fas fa-angle-up"></i>
 			<div id="v-pre">
-				<i id="v-pre-close" class="fas fa-times"></i>
+				<i id="v-pre-close" class="fas fa-angle-down"></i>
 				<div class="v-pre-reg"></div>
 				<div class="v-pre-tbl-header">
 					<table class="v-pre-tbl" cellpadding="0" cellspacing="0" border="0">
