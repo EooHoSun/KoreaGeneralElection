@@ -3,7 +3,7 @@ import axios from 'axios'
 import * as L from 'leaflet'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import Search2 from './search2'
-import { createElementFromHTML } from './util'
+// import { createElementFromHTML } from './util'
 
 /**
  * 정당 & 레이어 색상
@@ -29,6 +29,14 @@ function VoteMap(mapId) {
 	this.layers = {}
 	this.markers = {}
 	this.controls = {}
+	this.floats = {
+		elect20: {
+			party: document.getElementById('v-last-party'),
+		},
+		electReg: {
+			pre: document.getElementById('v-pre'),
+		},
+	}
 	this.data = null
 
 	this.init()
@@ -61,12 +69,16 @@ VoteMap.prototype.init = async function init() {
 		],
 	})
 
+	// 기본 이벤트 걸기
+	this._addDefaultEvents()
+
 	// 내위치찾기 버튼 생성
 	this._createGeolocButton()
 
 	// 21대 총선 선거구 그리기
 	this._drawElectRegLayer()
 	this.layers.electReg.addTo(this.map) // default
+
 	// 20대 총선 결과 & 선거구 그리기
 	this._drawElect20Layer()
 
@@ -77,11 +89,12 @@ VoteMap.prototype.init = async function init() {
 }
 
 // 메뉴 별 layer Change
-VoteMap.prototype.changeLayer = function(layer, menuName) {
+VoteMap.prototype.changeLayer = function(layer) {
 	// 선택한 레이어 올리기 (없을 경우만)
 	if (!this.map.hasLayer(layer)) {
 		layer.addTo(this.map)
 	}
+
 	// 그 외 레이어 지우기 (있을 경우만)
 	Object.values(this.layers)
 		.filter(l => l !== layer)
@@ -90,13 +103,19 @@ VoteMap.prototype.changeLayer = function(layer, menuName) {
 				l.removeFrom(this.map)
 			}
 		})
+}
 
-	if (menuName === 'elect20') {
-		document.getElementById('v-pre').style.display = 'none'
-		document.getElementById('v-last-result').style.display = 'block'
-	} else if (menuName === 'electReg') {
-		document.getElementById('v-last-result').style.display = 'none'
-	}
+/**
+ * 기본 이벤트 걸기
+ */
+VoteMap.prototype._addDefaultEvents = function() {
+	// float box에 toggle 이벤트 추가
+	document.querySelectorAll('.v-float-toggle').forEach(btn => {
+		btn.addEventListener('click', function() {
+			this.classList.toggle('hide')
+			this.previousElementSibling.classList.toggle('hide')
+		})
+	})
 }
 
 /**
@@ -156,11 +175,75 @@ VoteMap.prototype._createGeolocButton = function() {
 }
 
 /**
+ * 21대 총선 예비후보자 정보 출력
+ * * VoteMap의 prototype으로 지정할 필요 없을 것 같아서 따로 펑션으로 뺌
+ *
+ * @param {Node} preDiv
+ * @param {String} electCd
+ */
+async function makePreCandidateInfo(preDiv, electCd) {
+	const {
+		data: { candidates },
+	} = await axios.get(`/api/preCand?electCd=${electCd}`)
+
+	const toggleBtn = preDiv.querySelector('.v-float-toggle')
+	const toggleBtnDiv = toggleBtn.querySelector('div')
+	const tblContent = preDiv.querySelector('.v-pre-tbl-content')
+
+	// 숨겨져 있을 수 있으므로 hide 지운다
+	preDiv.children.forEach(node => node.classList.remove('hide'))
+
+	// 토글버튼 내용 설정
+	toggleBtnDiv.innerHTML = `<strong>${candidates[0].선거구명}</strong><br/><small>(2020.02.12.23:00기준)</small>`
+
+	// content table 작성
+	let html = '<table class="v-pre-tbl"><tbody>'
+	candidates.forEach(candi => {
+		let name = candi['성명']
+		name = name.substr(0, name.indexOf('<br'))
+		let addr = candi['주소']
+		const addrArr = addr.split(' ')
+		if (addrArr.length > 2) {
+			addr = `${addrArr[0]} ${addrArr[1]} ${addrArr[2]}`
+		}
+		html += '<tr>'
+		html += `<td>${candi['소속정당']}</td>`
+		html += `<td>${name}</td>`
+		html += `<td>${candi['성별']}</td>`
+		html += `<td>${candi['생년월일'].substr(-4, 2)}</td>`
+		html += `<td>${addr}</td>`
+		html += `<td><button class="v-pre-unfold"></button></td>`
+		html += '</tr>'
+		html += '<tr class="v-pre-detail-info">'
+		html += '<td colspan="6">'
+		html += `<strong>직업 :</strong> ${candi['직업']}<br>`
+		html += `<strong>학력 :</strong> ${candi['학력']}<br>`
+		html += `<strong>경력 :</strong> ${candi['경력'].split('<br/>').join(', ')}<br>`
+		html += `<strong>전과기록건수 :</strong> ${candi['전과기록건수']}<br>`
+		html += '</td>'
+		html += '</tr>'
+	})
+	html += '</tbody></table>'
+	tblContent.innerHTML = html
+
+	// 접기/펴기 액션 추가
+	const foldBtns = tblContent.querySelectorAll('.v-pre-unfold')
+	foldBtns.forEach(btn => {
+		btn.addEventListener('click', function() {
+			this.classList.toggle('show')
+			this.parentNode.parentNode.nextElementSibling.classList.toggle('show')
+		})
+	})
+
+	// pre div 안 보이면 켜기
+	preDiv.classList.add('show')
+}
+
+/**
  * 21대 총선 선거구 그리기
  */
 VoteMap.prototype._drawElectRegLayer = function() {
-	const self = this
-
+	const preDiv = this.floats.electReg.pre
 	this.layers.electReg = L.geoJSON(this.data.geoJson, {
 		style: {
 			weight: 1,
@@ -171,131 +254,39 @@ VoteMap.prototype._drawElectRegLayer = function() {
 		onEachFeature(feature, layer) {
 			// bind click
 			layer.on('click', () => {
-				document.getElementById('v-pre').style.display = 'block'
-				self._makePreCandidateInfo(feature.properties.elect_cd)
+				makePreCandidateInfo(preDiv, feature.properties.elect_cd)
 			})
 		},
-	}).bindTooltip(
-		layer => {
-			const elected = this.data.elected.find(
-				x => x.elect_cd === layer.feature.properties.elect_cd
-			)
-			if (!elected) return '<strong>선거구 없음</strong>'
-			return (
-				`<p><strong>선거구 : </strong>${elected.sungugu}</p>` +
-				'<p><small>클릭하면 예비후보자 조회가 가능합니다</small></p>'
-			)
-		},
-		{ opacity: 1, className: 'v-elected-tooltip' }
-	)
-}
-
-/**
- * 21대 총선 예비후보자 정보 출력
- */
-VoteMap.prototype._makePreCandidateInfo = async function(electCd) {
-	const { data } = await axios.get(`/api/preCand?electCd=${electCd}`)
-	const { candidates } = data
-	console.log(candidates)
-
-	// 기존 table contents 삭제
-	if (document.getElementsByClassName('v-pre-reg')[0].innerText !== '') {
-		document.getElementsByClassName('v-pre-reg')[0].innerText = ''
-		document.getElementsByClassName('v-pre-tbl')[1].remove() // table contents 지움
-	}
-
-	document.getElementsByClassName(
-		'v-pre-reg'
-	)[0].innerText = `${candidates[0].선거구명}  (2020.02.12.23:00기준)`
-
-	// table contents
-	let html = '<table class="v-pre-tbl">'
-	// html += '<thead>'
-	// html += ' <tr>'
-	// html += '  <td>소속정당</td>'
-	// html += '  <td>성명</td>'
-	// html += '  <td>성별</td>'
-	// html += '  <td>나이</td>'
-	// html += '  <td>주소</td>'
-	// html += '  <td>직업</td>'
-	// html += '  <td>학력</td>'
-	// html += '  <td>경력</td>'
-	// html += '  <td>전과기록</td>'
-	// html += ' </tr>'
-	// html += '</thead>'
-	html += '<tbody>'
-
-	for (let i = 0; i < candidates.length; i += 1) {
-		let name = candidates[i].성명
-		name = name.substr(0, name.indexOf('<br'))
-		let addr = candidates[i].주소
-		const addrArr = addr.split(' ')
-		if (addrArr.length > 2) {
-			addr = `${addrArr[0]} ${addrArr[1]} ${addrArr[2]}`
-		}
-		html += '<tr>'
-		html += ` <td>${candidates[i].소속정당}</td>`
-		html += ` <td>${name}</td>`
-		html += ` <td>${candidates[i].성별}</td>`
-		html += ` <td>${candidates[i].생년월일.substr(-4, 2)}</td>`
-		html += ` <td>${addr}<button class="v-pre-unfold"></button></td>`
-		// html += ` <td>${candidates[i].직업}</td>`
-		// html += ` <td>${candidates[i].학력}</td>`
-		// html += ` <td>${candidates[i].경력}</td>`
-		// html += ` <td>${candidates[i].전과기록건수}</td>`
-		html += '</tr>'
-		html += '<tr class="v-pre-detail-info"><td colspan="5">'
-		html += `직업 : ${candidates[i].직업}<br>`
-		html += `학력 : ${candidates[i].학력}<br>`
-		html += `경력 : ${candidates[i].경력}<br>`
-		html += `전과기록건수 : ${candidates[i].전과기록건수}<br>`
-		html += '</td></tr>'
-	}
-	html += '</tbody>'
-	html += '</table>'
-
-	const tableContents = createElementFromHTML(html)
-	document.getElementsByClassName('v-pre-tbl-content')[0].append(tableContents)
-
-	const acc = document.getElementsByClassName('v-pre-unfold')
-	let i
-	// for (i = 0; i < acc.length; i += 1) {
-	// 	acc[i].addEventListener('click', self._openPreCandDetailInfo(acc[i]))
-	// }
-	for (i = 0; i < acc.length; i += 1) {
-		acc[i].onclick = function() {
-			console.log(this)
-			this.classList.toggle('active')
-			const panel = this.parentElement.parentElement.nextElementSibling
-			if (panel.style.display === 'contents') {
-				panel.style.display = 'none'
-			} else {
-				panel.style.display = 'contents'
-			}
-		}
-	}
-}
-
-VoteMap.prototype._openPreCandDetailInfo = function(button) {
-	button.classList.toggle('active')
-	const detailInfo = button.parentElement.parentElement.nextElementSibling
-	if (detailInfo.style.maxHeight) {
-		detailInfo.style.maxHeight = null
-	} else {
-		detailInfo.style.maxHeight = `${detailInfo.scrollHeight}px`
-	}
+	})
+		.bindTooltip(
+			layer => {
+				const elected = this.data.elected.find(
+					x => x.elect_cd === layer.feature.properties.elect_cd
+				)
+				if (!elected) return '<strong>선거구 없음</strong>'
+				return (
+					`<p><strong>선거구 : </strong>${elected.sungugu}</p>` +
+					'<p><small>클릭하면 예비후보자 조회가 가능합니다</small></p>'
+				)
+			},
+			{ opacity: 1, className: 'v-elected-tooltip' }
+		)
+		.on('add', () => {
+			// 21대 선거구가 그려질땐 20대 총선 결과 div를 hide
+			this.floats.elect20.party.classList.remove('show')
+		})
 }
 
 /**
  * 20대 선거구 & 결과 그리기
  */
 VoteMap.prototype._drawElect20Layer = function() {
-	const self = this
+	const { geoJson, elected } = this.data
 
-	this.layers.elect20 = L.geoJSON(self.data.geoJson, {
+	this.layers.elect20 = L.geoJSON(geoJson, {
 		style(feature) {
-			const elected = self.data.elected.find(x => x.elect_cd === feature.properties.elect_cd)
-			const party = elected ? elected.party : ''
+			const electedOne = elected.find(x => x.elect_cd === feature.properties.elect_cd)
+			const party = electedOne ? electedOne.party : ''
 			return {
 				weight: 1,
 				color: PARTY_COLOR.find(x => x.party === party).color,
@@ -303,23 +294,33 @@ VoteMap.prototype._drawElect20Layer = function() {
 				className: 'data-layer',
 			}
 		},
-	}).bindTooltip(
-		layer => {
-			const elected = self.data.elected.find(
-				x => x.elect_cd === layer.feature.properties.elect_cd
-			)
-			if (!elected) return '<strong>선거구 없음</strong>'
-			return (
-				// `<p><strong>행정동 : </strong>${layer.feature.properties.adm_nm}</p>` +
-				`<p><strong>선거구 : </strong>${elected.sungugu}</p>` +
-				`<p><strong>당선인 : </strong>${elected.name}</p>` +
-				`<p><strong>당선당 : </strong>${elected.party}</p>`
-			)
-		},
-		{ opacity: 1, className: 'v-elected-tooltip' }
-	)
+	})
+		.bindTooltip(
+			layer => {
+				const electedOne = elected.find(
+					x => x.elect_cd === layer.feature.properties.elect_cd
+				)
+				if (!electedOne) return '<strong>선거구 없음</strong>'
+				return (
+					`<p><strong>선거구 : </strong>${electedOne.sungugu}</p>` +
+					`<p><strong>당선인 : </strong>${electedOne.name}</p>` +
+					`<p><strong>당선당 : </strong>${electedOne.party}</p>`
+				)
+			},
+			{ opacity: 1, className: 'v-elected-tooltip' }
+		)
+		.on('add', () => {
+			// 20대 총선 결과가 그려질땐 21대 선거구를 안보이게
+			const { elect20, electReg } = this.floats
+			electReg.pre.classList.remove('show')
+			elect20.party.classList.add('show')
+			elect20.party.children.forEach(node => node.classList.remove('hide'))
+		})
 }
 
+/**
+ * 후보자 검색
+ */
 VoteMap.prototype._setSearch = function() {
 	this._setSearchEvent(new Search2(this.data.geoJson))
 }
