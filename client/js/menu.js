@@ -1,6 +1,6 @@
 const sToggleBtn = document.getElementById('v-sidebar-toggle')
 
-function toggleSidebar() {
+export function toggleSidebar() {
 	sToggleBtn.classList.toggle('is-active')
 	document
 		.querySelectorAll('html, #v-sidebar, #v-page-cover')

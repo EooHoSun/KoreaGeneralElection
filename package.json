@@ -24,7 +24,8 @@
 		"hangul-js": "^0.2.6",
 		"leaflet": "^1.6.0",
 		"leaflet-control-custom": "^1.0.0",
-		"leaflet-search": "^2.9.8"
+		"leaflet-search": "^2.9.8",
+		"lodash": "^4.17.15"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.8.4",
