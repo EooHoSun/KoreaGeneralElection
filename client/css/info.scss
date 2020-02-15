@@ -1,0 +1,217 @@
+// 공통설정
+.v-float-box {
+	display: none;
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	right: 10px;
+	&.show {
+		display: block;
+	}
+}
+.v-float-info {
+	overflow: hidden;
+	border-radius: 6px;
+	margin-bottom: 10px;
+	@include box-shadow;
+	&.hide {
+		display: none;
+	}
+}
+.v-float-toggle {
+	display: inline-flex;
+	align-items: center;
+	padding: 10px;
+	border-radius: 6px;
+	background-color: #fff;
+	font-weight: 500;
+	user-select: none;
+	cursor: pointer;
+	@include box-shadow;
+	i {
+		font-size: 20px;
+		margin-left: 10px;
+		color: #999;
+	}
+	&.hide i:before {
+		color: #000;
+		content: '\f077';
+	}
+}
+
+// 20대 총선 결과
+// 20대 총선 정당 색상정보 테이블
+.v-last-party-info {
+	$border: 1px solid #e7e7e7;
+	max-width: 100%;
+	background-color: #fff;
+	table-layout: fixed;
+	border-collapse: separate;
+	border-spacing: 0;
+	border-top: $border;
+	border-left: $border;
+	thead {
+		text-align: center;
+	}
+	th,
+	td {
+		padding: 5px;
+		border-bottom: $border;
+		border-right: $border;
+	}
+	tbody {
+		tr {
+			td:first-child {
+				border-left-width: 16px;
+				border-left-style: solid;
+			}
+		}
+	}
+	.party-new-nuri {
+		td:first-child {
+			border-left-color: #c9151e;
+		}
+	}
+	.party-with-demo {
+		td:first-child {
+			border-left-color: #1870b9;
+		}
+	}
+	.party-of-people {
+		td:first-child {
+			border-left-color: #006542;
+		}
+	}
+	.party-justice {
+		td:first-child {
+			border-left-color: #ffcc00;
+		}
+	}
+	.party-none {
+		td:first-child {
+			border-color: #eee;
+		}
+	}
+}
+@media (min-width: $breakpoint-xs + 20px) {
+	.v-last-party-info {
+		min-width: $breakpoint-xs;
+	}
+}
+@media (max-width: $breakpoint-xs + 20px) {
+	.v-last-party-info {
+		width: 100%;
+		thead {
+			tr {
+				th:first-child {
+					width: 95px;
+				}
+			}
+		}
+	}
+}
+
+// 예비후보자 목록
+#v-pre {
+	// 테이블
+	.v-pre-info {
+		max-width: 900px;
+	}
+	.v-pre-tbl {
+		width: 100%;
+		table-layout: fixed;
+		border-spacing: 0;
+	}
+	.v-pre-tbl-header {
+		background-color: rgba(0, 0, 0, 0.7);
+		color: #fff;
+	}
+	.v-pre-tbl-content {
+		max-height: 180px;
+		overflow-y: auto;
+		background-color: #fff;
+	}
+	table {
+		text-align: center;
+		td,
+		th {
+			&:nth-child(1) {
+				width: 26%;
+			}
+			&:nth-child(2) {
+				width: 20%;
+			}
+			&:nth-child(3) {
+				width: 12%;
+			}
+			&:nth-child(4) {
+				width: 12%;
+			}
+		}
+		th {
+			padding: 10px 8px;
+			font-weight: 500;
+			&:nth-child(5) {
+				width: 30%;
+			}
+		}
+		td {
+			padding: 5px 8px;
+			border-bottom: 1px solid #e7e7e7;
+			&:nth-child(5) {
+				width: 25%;
+			}
+			&:nth-child(6) {
+				width: 5%;
+				padding: 0;
+			}
+			button {
+				color: black;
+				background: none;
+				border: none;
+				outline: none;
+				font-size: 22px;
+				cursor: pointer;
+				&:after {
+					content: '\002B';
+					color: #000;
+					font-weight: 600;
+				}
+				&.show:after {
+					color: #999;
+					content: '\2212';
+				}
+			}
+		}
+		.v-pre-detail-info {
+			display: none;
+			text-align: left;
+			&.show {
+				display: table-row;
+			}
+			td {
+				width: 100%;
+				padding-left: 8px;
+				padding-right: 8px;
+			}
+		}
+	}
+}
+@media (max-width: $breakpoint-sm) {
+	#v-pre {
+		table {
+			th,
+			td {
+				padding-left: 4px;
+				padding-right: 4px;
+			}
+			button {
+				padding-left: 2px;
+				padding-right: 2px;
+			}
+		}
+		.v-pre-tbl-content {
+			max-height: 150px;
+		}
+	}
+}
