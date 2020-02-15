@@ -5,18 +5,14 @@
 	left: 10px;
 	bottom: 10px;
 	right: 10px;
-	&.show {
-		display: block;
-	}
+	@include if-show;
 }
 .v-float-info {
 	overflow: hidden;
 	border-radius: 6px;
 	margin-bottom: 10px;
 	@include box-shadow;
-	&.hide {
-		display: none;
-	}
+	@include if-hide;
 }
 .v-float-toggle {
 	display: inline-flex;

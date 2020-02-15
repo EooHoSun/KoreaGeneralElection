@@ -2,7 +2,7 @@ import 'leaflet/dist/leaflet.css'
 import axios from 'axios'
 import * as L from 'leaflet'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
-import Search2 from './search2'
+import Search from './search'
 // import { createElementFromHTML } from './util'
 
 /**
@@ -152,6 +152,7 @@ VoteMap.prototype._createGeolocButton = function() {
 					// Geolocation 객체를 사용
 					navigator.geolocation.getCurrentPosition(
 						position => {
+							// TODO: 나의 위치 찾아갈때 줌레벨을 좀 주는게 어떨가 싶음
 							self.markers.myloc = L.marker(
 								[position.coords.latitude, position.coords.longitude],
 								{ icon: locIcon }
@@ -243,6 +244,8 @@ async function makePreCandidateInfo(preDiv, electCd) {
  * 21대 총선 선거구 그리기
  */
 VoteMap.prototype._drawElectRegLayer = function() {
+	let clicked = null // 직전 클릭된 레이어
+
 	const preDiv = this.floats.electReg.pre
 	this.layers.electReg = L.geoJSON(this.data.geoJson, {
 		style: {
@@ -254,6 +257,12 @@ VoteMap.prototype._drawElectRegLayer = function() {
 		onEachFeature(feature, layer) {
 			// bind click
 			layer.on('click', () => {
+				if (clicked === layer) return // 같은 경우는 냅둔다
+				if (clicked) {
+					Object.values(layer._eventParents)[0].fire('reset')
+				}
+				clicked = layer
+				layer.setStyle({ fillOpacity: 0.9 })
 				makePreCandidateInfo(preDiv, feature.properties.elect_cd)
 			})
 		},
@@ -271,9 +280,15 @@ VoteMap.prototype._drawElectRegLayer = function() {
 			},
 			{ opacity: 1, className: 'v-elected-tooltip' }
 		)
-		.on('add', () => {
-			// 21대 선거구가 그려질땐 20대 총선 결과 div를 hide
-			this.floats.elect20.party.classList.remove('show')
+		.on('remove', () => {
+			// 21대 예비 후보자 정보 안보이게
+			this.floats.electReg.pre.classList.remove('show')
+
+			// 선택을 리셋
+			this.layers.electReg.fire('reset')
+		})
+		.on('reset', function() {
+			this.resetStyle()
 		})
 }
 
@@ -310,11 +325,13 @@ VoteMap.prototype._drawElect20Layer = function() {
 			{ opacity: 1, className: 'v-elected-tooltip' }
 		)
 		.on('add', () => {
-			// 20대 총선 결과가 그려질땐 21대 선거구를 안보이게
-			const { elect20, electReg } = this.floats
-			electReg.pre.classList.remove('show')
-			elect20.party.classList.add('show')
-			elect20.party.children.forEach(node => node.classList.remove('hide'))
+			// 20대 총선 결과가 그려질때
+			this.floats.elect20.party.classList.add('show')
+			this.floats.elect20.party.children.forEach(node => node.classList.remove('hide'))
+		})
+		.on('remove', () => {
+			// 20대 총선 결과 div를 숨김
+			this.floats.elect20.party.classList.remove('show')
 		})
 }
 
@@ -322,21 +339,26 @@ VoteMap.prototype._drawElect20Layer = function() {
  * 후보자 검색
  */
 VoteMap.prototype._setSearch = function() {
-	this._setSearchEvent(new Search2(this.data.geoJson))
-}
+	const search = new Search(this.data.geoJson)
 
-VoteMap.prototype._setSearchEvent = function(search) {
-	const self = this
-	search.bindEvent('selectGeoJson', function(geoJson) {
-		self.map.setView(
-			L.geoJSON(geoJson)
-				.getBounds()
-				.getCenter(),
-			12
-		)
+	// 검색결과 클릭시 이벤트 콜백으로 전달
+	search.bindEvent('selectGeoJson', geoJson => {
+		const electCd = geoJson.properties.elect_cd
+
+		if (this.map.hasLayer(this.layers.electReg)) {
+			// 21대 총선 정보 레이어가 on 상태라면
+			const layers = this.layers.electReg.getLayers()
+			const layer = layers.find(l => l.feature.properties.elect_cd === electCd)
+			this.map.fitBounds(layer.getBounds())
+			layer.fire('click')
+		} else if (this.map.hasLayer(this.layers.elect20)) {
+			// 20대 총선 결과 레이어가 on 상태라면
+			const layers = this.layers.electReg.getLayers()
+			const layer = layers.find(l => l.feature.properties.elect_cd === electCd)
+			this.map.fitBounds(layer.getBounds())
+			// TODO: 20대 총선 레이어에서 검색하면 어떻게 처리할 것인가?
+		}
 	})
-
-	search.bindEvent('deleteInput')
 }
 
 export default VoteMap
