@@ -1,7 +1,5 @@
 **2020 제 21대 국회의원 선거**
----
-
-
+---   
 | 일정|     날짜      |  시간|
 |----------|:-------------|:------:|
 | 예비후보자등록 신청 | 2019. 12. 17(화) ~        |  |
@@ -9,19 +7,23 @@
 | 사전투표소 투표 | 2020. 4. 10(금) ~ 4. 11(토)   |    06:00 ~ 18:00 |
 |선거일 투표|2020. 4. 15(수)  |06:00 ~ 18:00|
 
-**npm**
+**yarn**
 ---
 ```
-> npm install
-> npm i -g nodemon
-> npm run dev
+> npm install -g npm
+> npm -g yarn
+> yarn install
+> yarn dev
 ```
+- 만약   
+`error An unexpected error occurred: "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz: self signed certificate in certificate chain".`   
+에러 발생시   
+`> yarn config set "strict-ssl" false`
 
-**접속 경로**
+
+**접속 사이트**
 ---
-[4월 총선 알리미](https://www.produce300.com/)
- - 접속이 안될 경우 : [4월 총선 알리미](http://15.165.187.17/)
-
+[4월 총선 알리미](https://produce300.com/)
 
 
 **업데이트 현황**
@@ -37,6 +39,11 @@
 2020.02.09
 - 기존 Node만 사용하던 방식에서 프론트 : Webpack / 백엔드 : Node로 전환 
 - 행정동 전체 표시 -> 성능 이슈 발생 : mapshaper 사용해 선거구 geojson 데이터 생성
+
+2020.02.17
+- 예비후보자 조회 기능 추가
+- 선거구 검색 기능 추가
+- 디자인 수정 
 
 **참조**
 ---
