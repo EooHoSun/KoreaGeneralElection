@@ -152,13 +152,16 @@ VoteMap.prototype._createGeolocButton = function() {
 					// Geolocation 객체를 사용
 					navigator.geolocation.getCurrentPosition(
 						position => {
-							// TODO: 나의 위치 찾아갈때 줌레벨을 좀 주는게 어떨가 싶음
 							self.markers.myloc = L.marker(
 								[position.coords.latitude, position.coords.longitude],
 								{ icon: locIcon }
 							)
 							self.markers.myloc.addTo(self.map)
-							self.map.setView([position.coords.latitude, position.coords.longitude])
+
+							self.map.setView(
+								[position.coords.latitude, position.coords.longitude],
+								12
+							)
 						},
 						error => {
 							// 위치를 가져오는데 실패한 경우
