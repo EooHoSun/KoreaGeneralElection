@@ -79,22 +79,16 @@ Search.prototype.init = function() {
 	)
 
 	// input focus / blur 이벤트 추가
-	const closeUl = () => resetEl.call(this.els.ul)
 	this.els.input.addEventListener('focus', e => {
 		this.els.input.parentNode.classList.add('focused')
 		buildUl.call(this, e)
 		// 클릭시 ul 닫는 이벤트 활성화
 		setTimeout(() => {
-			document.addEventListener('click', closeUl)
+			document.addEventListener('click', () => resetEl.call(this.els.ul), { once: true }) // 한번만 실행하고 이 listener 삭제
 		}, 200)
 	})
 	this.els.input.addEventListener('blur', function() {
 		this.parentNode.classList.remove('focused')
-		// 클릭시 ul 닫는 이벤트 삭제
-		setTimeout(() => {
-			closeUl()
-			document.removeEventListener('click', closeUl)
-		}, 200)
 	})
 
 	// input reset 이벤트 추가
@@ -121,8 +115,7 @@ Search.prototype.bindEvent = function(eventName, callback) {
 				callback(filtered)
 			}
 
-			// ul 값 지움 & 메뉴 닫기
-			resetEl.call(this.els.ul)
+			// 메뉴 닫기
 			toggleSidebar()
 		})
 	}
