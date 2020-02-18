@@ -91,8 +91,8 @@ Search.prototype.init = function() {
 	this.els.input.addEventListener('blur', function() {
 		this.parentNode.classList.remove('focused')
 		// 클릭시 ul 닫는 이벤트 삭제
-		closeUl()
 		setTimeout(() => {
+			closeUl()
 			document.removeEventListener('click', closeUl)
 		}, 200)
 	})
