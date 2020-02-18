@@ -12,19 +12,62 @@ function Search(data) {
 		reset: document.getElementById('v-search-reset'),
 	}
 	this.data = data.features
-	this.electCds = data.features.map(element => element.properties.elect_cd)
+	this.electCds = data.features.map(element => {
+		const electCd = element.properties.elect_cd
+		const electArr = electCd.split('|')
+		const disassembled = Hangul.disassemble(`${electArr[1]}${electArr[0]}`, true).reduce(
+			(acc, curr) => acc + curr[0],
+			''
+		)
+		return {
+			text: `${electArr[1]}(${electArr[0]})`,
+			value: electCd,
+			disassembled, // 초성검색용 초성
+		}
+	})
 
 	this.init()
 }
 
 /**
- * Search UL을 리셋
- * @param {Node} el
+ * call로 받아서 element를 리셋
  */
-function resetUl(el) {
-	// eslint-disable-next-line no-param-reassign
-	el.innerHTML = ''
-	el.classList.remove('show')
+function resetEl() {
+	// this: searchObj.els.ul
+	this.innerHTML = ''
+	this.classList.remove('show')
+}
+
+/**
+ * call로 받아서 UL을 만든다
+ * @param {Event} e
+ */
+function buildUl(e) {
+	const inputValue = e.target.value.trim()
+	if (!inputValue) {
+		resetEl.call(this.els.ul)
+		return
+	}
+
+	const isConsonant = Hangul.isConsonant(inputValue) // 인풋이 초성인가
+	// 초성을 반환 ex) 한글날 -> ㅎㄱㄴ
+	const disassembled = Hangul.disassemble(inputValue, true).reduce(
+		(acc, curr) => acc + curr[0],
+		''
+	)
+
+	// 초성이면 초성검색, 그 외는 일반검색
+	const suggestions = this.electCds.filter(n =>
+		isConsonant ? n.disassembled.includes(disassembled) : n.value.includes(inputValue)
+	)
+	if (suggestions.length > 0) {
+		this.els.ul.classList.add('show')
+		this.els.ul.innerHTML = suggestions
+			.map(li => `<li class="v-search-li" data-cd="${li.value}">${li.text}</li>`)
+			.join('')
+	} else {
+		resetEl.call(this.els.ul)
+	}
 }
 
 // init Search
@@ -32,36 +75,32 @@ Search.prototype.init = function() {
 	// input 입력 이벤트 추가
 	this.els.input.addEventListener(
 		'keydown',
-		debounce(e => {
-			const inputValue = e.target.value.trim()
-			const suggestions =
-				inputValue === ''
-					? []
-					: this.electCds.filter(n => Hangul.search(n, inputValue) > -1)
-			if (suggestions.length > 0) {
-				// TODO: 종로구 (서울특별시) 이렇게 검색할 수 있을까?
-				this.els.ul.classList.add('show')
-				this.els.ul.innerHTML = suggestions
-					.map(li => `<li class="v-search-li">${li}</li>`)
-					.join('')
-			} else {
-				resetUl(this.els.ul)
-			}
-		}, 100)
+		debounce(e => buildUl.call(this, e), 100)
 	)
 
-	// input focus 이벤트 추가
-	this.els.input.addEventListener('focus', function() {
-		this.parentNode.classList.add('focused')
+	// input focus / blur 이벤트 추가
+	const closeUl = () => resetEl.call(this.els.ul)
+	this.els.input.addEventListener('focus', e => {
+		this.els.input.parentNode.classList.add('focused')
+		buildUl.call(this, e)
+		// 클릭시 ul 닫는 이벤트 활성화
+		setTimeout(() => {
+			document.addEventListener('click', closeUl)
+		}, 200)
 	})
 	this.els.input.addEventListener('blur', function() {
 		this.parentNode.classList.remove('focused')
+		// 클릭시 ul 닫는 이벤트 삭제
+		closeUl()
+		setTimeout(() => {
+			document.removeEventListener('click', closeUl)
+		}, 200)
 	})
 
 	// input reset 이벤트 추가
 	this.els.reset.addEventListener('click', () => {
 		this.els.input.value = ''
-		resetUl(this.els.ul)
+		resetEl.call(this.els.ul)
 	})
 }
 
@@ -75,7 +114,7 @@ Search.prototype.bindEvent = function(eventName, callback) {
 			if (!e.target.className === 'v-search-li') return
 
 			const filtered = this.data.find(
-				feature => feature.properties.elect_cd === e.target.textContent
+				feature => feature.properties.elect_cd === e.target.dataset.cd
 			)
 			// 선택값이 존재하면 callback 실행
 			if (filtered && callback) {
@@ -83,7 +122,7 @@ Search.prototype.bindEvent = function(eventName, callback) {
 			}
 
 			// ul 값 지움 & 메뉴 닫기
-			resetUl(this.els.ul)
+			resetEl.call(this.els.ul)
 			toggleSidebar()
 		})
 	}
