@@ -213,7 +213,7 @@ async function makePreCandidateInfo(preDiv, electCd) {
 	preDiv.children.forEach(node => node.classList.remove('hide'))
 
 	// 토글버튼 내용 설정
-	toggleBtnDiv.innerHTML = `<strong>${candidates[0].선거구명}</strong><br/><small>(2020.02.12.23:00기준)</small>`
+	toggleBtnDiv.innerHTML = `<strong>${candidates[0].선거구명}</strong><br/><small>(2020.02.20.02:30기준)</small>`
 
 	// content table 작성
 	let html = '<table class="v-pre-tbl"><tbody>'
@@ -229,7 +229,7 @@ async function makePreCandidateInfo(preDiv, electCd) {
 		const { color } = PARTY_COLOR.find(x => x.party === jungdang)
 		html += '<tr>'
 		html += `<td style="color:${color}"><strong>${jungdang}</strong></td>`
-		html += `<td>${name}</td>`
+		html += `<td><a href="https://search.naver.com/search.naver?query=${name}" target="_blank" title="네이버로 검색하기">${name}</a></td>`
 		html += `<td>${candi['성별']}</td>`
 		html += `<td>${candi['생년월일'].substr(-4, 2)}</td>`
 		html += `<td>${candi['전과기록건수']}</td>`
