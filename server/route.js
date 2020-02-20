@@ -8,14 +8,10 @@ const allElectRegPreCandidates = require('./data/candidate_20200212_23_00_json.j
 
 // /api/data
 router.get('/data', (req, res) => {
-	if (req.query.type === '20') {
-		res.json({
-			geoJson: hjdElect20_5,
-			elected: elected20,
-		})
-	} else {
-		res.json({})
-	}
+	res.json({
+		geoJson: hjdElect20_5,
+		elected: elected20,
+	})
 })
 
 router.get('/preCand', (req, res) => {

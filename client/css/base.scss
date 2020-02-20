@@ -23,15 +23,23 @@ html,
 body {
 	width: 100%;
 	height: 100%;
+	font-size: $default-font-size;
 }
 html {
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	-webkit-font-smoothing: antialiased;
+	// 글씨확대
+	&.large {
+		font-size: 16px;
+		body {
+			font-size: 16px;
+		}
+	}
 }
 body {
 	margin: 0;
-	font-size: $default-font-size;
 	font-family: $default-font-family;
+	font-weight: 400;
 }
 a {
 	color: #2196f3;
@@ -43,10 +51,14 @@ a {
 
 // wrap
 #v-wrap {
+	width: 100%;
 	min-height: 100%;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+	position: fixed;
+	overflow: hidden;
+	-webkit-overflow-scrolling: touch;
 }
 
 // 헤더
@@ -65,7 +77,7 @@ a {
 	margin-bottom: 8px;
 	h1 {
 		margin: 0;
-		font-size: 32px;
+		font-size: 2.25rem;
 		transition: font-size 0.3s;
 	}
 }
@@ -79,12 +91,12 @@ a {
 	transition: width 0.3s, height 0.3s;
 }
 .v-header-timer {
-	font-size: 22px;
+	font-size: 1.5rem;
 	transition: font-size 0.3s;
 }
 @media (max-width: $breakpoint-sm) {
 	.v-title h1 {
-		font-size: 22px;
+		font-size: 1.5rem;
 	}
 	.v-title-logo {
 		$logo-size-sm: 30px;
@@ -94,7 +106,7 @@ a {
 		margin-right: 8px;
 	}
 	.v-header-timer {
-		font-size: 16px;
+		font-size: 1.15rem;
 	}
 }
 
@@ -151,8 +163,8 @@ $hamburger-height: 46px;
 		padding: 0;
 		text-align: center;
 		li {
-			font-size: 20px;
-			line-height: 45px;
+			font-size: 1.45rem;
+			line-height: 2.2;
 			cursor: pointer;
 			&:hover {
 				font-weight: 500;
@@ -177,7 +189,7 @@ $hamburger-height: 46px;
 			}
 		}
 		strong {
-			font-size: 16px;
+			font-size: 1.15rem;
 		}
 		.github-link {
 			color: #000;
@@ -221,70 +233,4 @@ html {
 	width: 100%;
 	height: 100%;
 	font-family: $default-font-family;
-}
-
-/**
-*	search css
-*/
-.v-search {
-	$border: 1px solid rgba(0, 0, 0, 0.42);
-	position: relative;
-	.v-search-box {
-		$cross-btn-size: 18px;
-		width: 100%;
-		display: flex;
-		align-items: center;
-		border-bottom: $border;
-		box-sizing: border-box;
-		&.focused {
-			border-bottom: 2px solid #2196f3;
-		}
-		.v-search-input {
-			width: calc(100% - #{$cross-btn-size});
-			margin-right: 5px;
-			padding: 6px 0 7px;
-			border: none;
-			font-size: 16px;
-			line-height: $cross-btn-size;
-			outline: none;
-		}
-		button {
-			width: $cross-btn-size;
-			padding-top: 4px;
-			padding-bottom: 4px;
-			border: 0;
-			outline: none;
-			color: #2f4f4f;
-			background: none;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: $cross-btn-size;
-			cursor: pointer;
-			&:hover {
-				color: #999;
-			}
-		}
-	}
-	// 검색결과 목록
-	.v-search-ul {
-		display: none;
-		min-width: 100%;
-		max-height: 147px;
-		overflow-y: scroll;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		border: $border;
-		border-top: 0;
-		@include if-show;
-		.v-search-li {
-			padding: 2px;
-			cursor: pointer;
-			&:hover {
-				color: #fff;
-				background-color: #2196f3;
-			}
-		}
-	}
 }
