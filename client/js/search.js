@@ -115,8 +115,9 @@ Search.prototype.bindEvent = function(eventName, callback) {
 				callback(filtered)
 			}
 
-			// 메뉴 닫기
+			// 메뉴 닫기 && 안지워졌을수 있으니 ul 지우기
 			toggleSidebar()
+			resetEl.call(this.els.ul)
 		})
 	}
 }

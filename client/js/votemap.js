@@ -9,11 +9,26 @@ import Search from './search'
  * 정당 & 레이어 색상
  */
 const PARTY_COLOR = [
-	{ party: '더불어민주당', color: '#1870B9' },
-	{ party: '새누리당', color: '#C9151E' },
-	{ party: '국민의당', color: '#006542' },
+	{ party: '더불어민주당', color: '#004EA2' },
+	{ party: '새누리당', color: '#C9252B' },
+	{ party: '국민의당', color: '#006241' },
 	{ party: '무소속', color: '#555555' },
 	{ party: '정의당', color: '#FFCC00' },
+	{ party: '자유한국당', color: '#C9151E' },
+	{ party: '미래한국당', color: '#C9151E' },
+	{ party: '미래통합당', color: '#EF426F' },
+	{ party: '바른미래당', color: '#00B4B4' },
+	{ party: '대안신당', color: '#236736' },
+	{ party: '우리공화당', color: '#14A83B' },
+	{ party: '민중당', color: '#F16522' },
+	{ party: '국가혁명배당금당', color: '#E7141A' },
+	{ party: '새로운보수당', color: '#00A7E5' },
+	{ party: '기본소득당', color: '#FE8871' },
+	{ party: '민주평화당', color: '#43B02A' },
+	{ party: '기독당', color: '#755191' },
+	{ party: '대한당', color: '#4B3293' },
+	{ party: '한나라당', color: '#D61921' },
+	{ party: '국민새정당', color: '#1F6DDC' },
 	{ party: '', color: '#cccccc' }, // 파주
 ]
 
@@ -46,7 +61,7 @@ function VoteMap(mapId) {
  * init VoteMap
  */
 VoteMap.prototype.init = async function init() {
-	const { data } = await axios.get('/api/data?type=20')
+	const { data } = await axios.get('/api/data')
 	this.data = data
 
 	const zoom = 7 // init zoom
@@ -210,20 +225,22 @@ async function makePreCandidateInfo(preDiv, electCd) {
 		if (addrArr.length > 2) {
 			addr = `${addrArr[0]} ${addrArr[1]} ${addrArr[2]}`
 		}
+		const jungdang = candi['소속정당']
+		const { color } = PARTY_COLOR.find(x => x.party === jungdang)
 		html += '<tr>'
-		html += `<td>${candi['소속정당']}</td>`
+		html += `<td style="color:${color}"><strong>${jungdang}</strong></td>`
 		html += `<td>${name}</td>`
 		html += `<td>${candi['성별']}</td>`
 		html += `<td>${candi['생년월일'].substr(-4, 2)}</td>`
-		html += `<td>${addr}</td>`
+		html += `<td>${candi['전과기록건수']}</td>`
 		html += `<td><button class="v-pre-unfold"></button></td>`
 		html += '</tr>'
 		html += '<tr class="v-pre-detail-info">'
 		html += '<td colspan="6">'
-		html += `<strong>직업 :</strong> ${candi['직업']}<br>`
-		html += `<strong>학력 :</strong> ${candi['학력']}<br>`
-		html += `<strong>경력 :</strong> ${candi['경력'].split('<br/>').join(', ')}<br>`
-		html += `<strong>전과기록건수 :</strong> ${candi['전과기록건수']}<br>`
+		html += `<strong>직업 :</strong> ${candi['직업']}<br />`
+		html += `<strong>학력 :</strong> ${candi['학력']}<br />`
+		html += `<strong>경력 :</strong> ${candi['경력'].split('<br/>').join(', ')}<br />`
+		html += `<strong>주소 :</strong> ${addr}`
 		html += '</td>'
 		html += '</tr>'
 	})
@@ -281,7 +298,7 @@ VoteMap.prototype._drawElectRegLayer = function() {
 					'<p><small>클릭하면 예비후보자 조회가 가능합니다</small></p>'
 				)
 			},
-			{ opacity: 1, className: 'v-elected-tooltip' }
+			{ opacity: 1, className: 'v-elect-tooltip v-elect-reg-tooltip' }
 		)
 		.on('remove', () => {
 			// 21대 예비 후보자 정보 안보이게
@@ -325,7 +342,7 @@ VoteMap.prototype._drawElect20Layer = function() {
 					`<p><strong>당선당 : </strong>${electedOne.party}</p>`
 				)
 			},
-			{ opacity: 1, className: 'v-elected-tooltip' }
+			{ opacity: 1, className: 'v-elect-tooltip' }
 		)
 		.on('add', () => {
 			// 20대 총선 결과가 그려질때

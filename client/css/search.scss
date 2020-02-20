@@ -1,0 +1,68 @@
+/**
+*	search css
+*/
+.v-search {
+	$border: 1px solid rgba(0, 0, 0, 0.42);
+	position: relative;
+	z-index: 1;
+	.v-search-box {
+		$cross-btn-size: 18px;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		border-bottom: $border;
+		box-sizing: border-box;
+		&.focused {
+			border-bottom: 2px solid #2196f3;
+		}
+		.v-search-input {
+			width: calc(100% - #{$cross-btn-size});
+			margin-right: 5px;
+			padding: 6px 0 7px;
+			border: none;
+			font-size: 16px;
+			line-height: $cross-btn-size;
+			outline: none;
+		}
+		button {
+			width: $cross-btn-size;
+			padding-top: 4px;
+			padding-bottom: 4px;
+			border: 0;
+			outline: none;
+			color: #2f4f4f;
+			background: none;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: $cross-btn-size;
+			cursor: pointer;
+			&:hover {
+				color: #999;
+			}
+		}
+	}
+	// 검색결과 목록
+	.v-search-ul {
+		display: none;
+		min-width: 100%;
+		max-height: 147px;
+		overflow-y: scroll;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border: $border;
+		border-top: 0;
+		box-sizing: border-box;
+		background-color: #fff;
+		@include if-show;
+		.v-search-li {
+			padding: 2px;
+			cursor: pointer;
+			&:hover {
+				color: #fff;
+				background-color: #2196f3;
+			}
+		}
+	}
+}

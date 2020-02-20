@@ -1,8 +1,14 @@
 // 구역 툴팁
-.v-elected-tooltip {
-	font-size: 14px;
+.v-elect-tooltip {
+	font-size: 1rem;
 	p {
 		margin: 0;
+	}
+}
+@media (max-width: $breakpoint-xs) {
+	// 모바일 화면에서는 툴팁 안 보이게 수정함
+	.v-elect-reg-tooltip {
+		display: none;
 	}
 }
 
@@ -43,4 +49,20 @@
 // 지도 hover
 .data-layer:hover {
 	fill-opacity: 0.8;
+}
+
+// attribution
+.leaflet-control-attribution {
+	display: flex;
+	align-items: center;
+	a {
+		display: flex;
+		&:first-child {
+			margin-right: 3px;
+			text-transform: lowercase;
+		}
+		img {
+			height: 15px;
+		}
+	}
 }
