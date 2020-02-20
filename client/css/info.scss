@@ -5,12 +5,14 @@
 	left: 10px;
 	bottom: 10px;
 	right: 10px;
+	pointer-events: none;
 	@include if-show;
 }
 .v-float-info {
 	overflow: hidden;
 	border-radius: 6px;
 	margin-bottom: 10px;
+	pointer-events: auto;
 	@include box-shadow;
 	@include if-hide;
 }
@@ -23,6 +25,7 @@
 	font-weight: 500;
 	user-select: none;
 	cursor: pointer;
+	pointer-events: auto;
 	@include box-shadow;
 	i {
 		font-size: 20px;
