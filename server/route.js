@@ -4,7 +4,7 @@ const router = express.Router()
 
 const hjdElect20_5 = require('./data/hjd_elect_20_5.json') // simplify 5%
 const elected20 = require('./data/elected_20.json')
-const allElectRegPreCandidates = require('./data/candidate_20200220_02_30_ver2.json')
+const allElectRegPreCandidates = require('./data/candidate_20200220_20_30.json')
 
 // /api/data
 router.get('/data', (req, res) => {

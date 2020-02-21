@@ -213,7 +213,7 @@ async function makePreCandidateInfo(preDiv, electCd) {
 	preDiv.children.forEach(node => node.classList.remove('hide'))
 
 	// 토글버튼 내용 설정
-	toggleBtnDiv.innerHTML = `<strong>${candidates[0].선거구명}</strong><br/><small>(2020.02.20.02:30기준)</small>`
+	toggleBtnDiv.innerHTML = `<strong>${candidates[0].선거구명}</strong><br/><small>(2020.02.20.20:30기준)</small>`
 
 	// content table 작성
 	let html = '<table class="v-pre-tbl"><tbody>'
@@ -236,7 +236,9 @@ async function makePreCandidateInfo(preDiv, electCd) {
 		html += `<td><button class="v-pre-unfold"></button></td>`
 		html += '</tr>'
 		html += '<tr class="v-pre-detail-info">'
-		html += '<td colspan="6">'
+    html += `<td> <img src="${candi['사진']}" style="width: 100%;">`
+		html += '</td>'
+		html += '<td colspan="5">'
 		html += `<strong>직업 :</strong> ${candi['직업']}<br />`
 		html += `<strong>학력 :</strong> ${candi['학력']}<br />`
 		html += `<strong>경력 :</strong> ${candi['경력'].split('<br/>').join(', ')}<br />`
