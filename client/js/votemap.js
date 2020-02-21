@@ -203,7 +203,9 @@ VoteMap.prototype._createGeolocButton = function() {
 async function makePreCandidateInfo(preDiv, electCd) {
 	const {
 		data: { candidates },
-	} = await axios.get(`/api/preCand?electCd=${electCd}`)
+	} = await axios.get('/api/preCand', {
+		params: { electCd },
+	})
 
 	const toggleBtn = preDiv.querySelector('.v-float-toggle')
 	const toggleBtnDiv = toggleBtn.querySelector('div')
@@ -236,7 +238,7 @@ async function makePreCandidateInfo(preDiv, electCd) {
 		html += `<td><button class="v-pre-unfold"></button></td>`
 		html += '</tr>'
 		html += '<tr class="v-pre-detail-info">'
-    html += `<td> <img src="${candi['사진']}" style="width: 100%;">`
+		html += `<td> <img src="${candi['사진']}" style="width: 100%;">`
 		html += '</td>'
 		html += '<td colspan="5">'
 		html += `<strong>직업 :</strong> ${candi['직업']}<br />`
