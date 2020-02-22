@@ -23,7 +23,8 @@
 		"hangul-js": "^0.2.6",
 		"leaflet": "^1.6.0",
 		"leaflet-control-custom": "^1.0.0",
-		"lodash": "^4.17.15"
+		"lodash": "^4.17.15",
+		"ua-parser-js": "^0.7.21"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.8.4",

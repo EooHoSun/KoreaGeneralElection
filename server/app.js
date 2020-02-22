@@ -21,7 +21,14 @@ if (isProd) {
 
 // error handler
 // eslint-disable-next-line no-unused-vars
+app.use('/api', (err, req, res, next) => {
+	// api 내에서의 오류 처리
+	res.status(500).json({ error: err.message })
+})
+
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
+	// 그 외 오류 처리
 	res.render('error', { error: err })
 })
 
