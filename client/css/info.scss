@@ -199,6 +199,29 @@
 				padding-left: 8px;
 				padding-right: 8px;
 			}
+			td > div {
+				display: flex;
+				align-items: center;
+				img {
+					display: block;
+					width: 110px;
+				}
+				& > div {
+					margin-left: 10px;
+				}
+			}
+		}
+		.v-pre-criminal {
+			&.no-data {
+				font-weight: 300;
+				color: #777;
+			}
+			&.has-data {
+				cursor: pointer;
+				&:hover {
+					font-weight: 500;
+				}
+			}
 		}
 	}
 }
@@ -219,9 +242,6 @@
 					width: 15%;
 				}
 			}
-		}
-		.v-pre-tbl-content {
-			max-height: 130px;
 		}
 	}
 }

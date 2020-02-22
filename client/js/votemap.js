@@ -1,5 +1,6 @@
 import 'leaflet/dist/leaflet.css'
 import axios from 'axios'
+import UAParser from 'ua-parser-js'
 import * as L from 'leaflet'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import Search from './search'
@@ -194,6 +195,27 @@ VoteMap.prototype._createGeolocButton = function() {
 }
 
 /**
+ * 21대 총선 예비후보자 전과 기록 상세 조회
+ *
+ * @param {String} huboId
+ */
+async function getPreCandCriminalRecord(huboId) {
+	const parser = new UAParser()
+	const device = parser.getDevice().type
+	const browser = parser.getBrowser().name
+	if (browser.endsWith('Safari')) {
+		// 사파리는 window.open 안 먹힘
+		window.location.assign(`/api/criminalPdf?huboId=${huboId}&stream=true`)
+	} else if (device === 'mobile' || device === 'tablet' || browser === 'IE') {
+		const { data } = await axios.get(`/api/criminalPdf?huboId=${huboId}`)
+		window.open(data.url, '_blank')
+	} else {
+		// 프록시 오픈
+		window.open(`/api/criminalPdf?huboId=${huboId}&stream=true`, '_blank')
+	}
+}
+
+/**
  * 21대 총선 예비후보자 정보 출력
  * * VoteMap의 prototype으로 지정할 필요 없을 것 같아서 따로 펑션으로 뺌
  *
@@ -229,27 +251,41 @@ async function makePreCandidateInfo(preDiv, electCd) {
 		}
 		const jungdang = candi['소속정당']
 		const { color } = PARTY_COLOR.find(x => x.party === jungdang)
+		const criminalClass = candi['전과기록건수'] === '없음' ? 'no-data' : 'has-data'
 		html += '<tr>'
-		html += `<td style="color:${color}"><strong>${jungdang}</strong></td>`
+		html += `<td style="color:${color}">${jungdang}</td>`
 		html += `<td><a href="https://search.naver.com/search.naver?query=${name}" target="_blank" title="네이버로 검색하기">${name}</a></td>`
 		html += `<td>${candi['성별']}</td>`
 		html += `<td>${candi['생년월일'].substr(-4, 2)}</td>`
-		html += `<td>${candi['전과기록건수']}</td>`
+		html += `<td><span class="v-pre-criminal ${criminalClass}" data-hubo-id="${candi['후보자ID']}">${candi['전과기록건수']}</span></td>`
 		html += `<td><button class="v-pre-unfold"></button></td>`
 		html += '</tr>'
 		html += '<tr class="v-pre-detail-info">'
-		html += `<td> <img src="${candi['사진']}" style="width: 100%;">`
-		html += '</td>'
-		html += '<td colspan="5">'
+		html += '<td colspan="6">'
+		html += '<div>'
+		html += `<img src="${candi['사진']}" />`
+		html += '<div>'
 		html += `<strong>직업 :</strong> ${candi['직업']}<br />`
 		html += `<strong>학력 :</strong> ${candi['학력']}<br />`
 		html += `<strong>경력 :</strong> ${candi['경력'].split('<br/>').join(', ')}<br />`
 		html += `<strong>주소 :</strong> ${addr}`
+		html += '</div>'
+		html += '</div>'
 		html += '</td>'
 		html += '</tr>'
 	})
 	html += '</tbody></table>'
 	tblContent.innerHTML = html
+
+	// 전과 기록 상세 조회 이벤트
+	const criminalEl = tblContent.querySelectorAll('.v-pre-criminal')
+	criminalEl.forEach(el => {
+		el.addEventListener('click', function() {
+			if (this.classList.contains('has-data')) {
+				getPreCandCriminalRecord(this.dataset.huboId)
+			}
+		})
+	})
 
 	// 접기/펴기 액션 추가
 	const foldBtns = tblContent.querySelectorAll('.v-pre-unfold')
