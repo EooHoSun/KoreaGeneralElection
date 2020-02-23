@@ -37,7 +37,9 @@ app.use((err, req, res, next) => {
 const dbUser = process.env.DB_USER || ''
 const dbPw = process.env.DB_PW || ''
 const dbAuth = dbUser && dbPw ? `${dbUser}:${encodeURIComponent(dbPw)}@` : ''
-const client = new MongoClient(`mongodb://${dbAuth}localhost:27017`, { useUnifiedTopology: true })
+const dbUrl = `mongodb://${dbAuth}localhost:27017/kge`
+const dbOption = { useUnifiedTopology: true }
+const client = new MongoClient(dbUrl, dbOption)
 client.connect(err => {
 	if (err) {
 		console.error(err.stack)
