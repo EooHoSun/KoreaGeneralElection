@@ -6,23 +6,26 @@ import { toggleSidebar } from './menu'
  * Search 정의
  */
 function Search(data) {
+	const properties = data.features.map(f => f.properties).filter(p => !!p.sggCode)
+
 	this.els = {
 		input: document.getElementById('v-search-input'),
 		ul: document.getElementById('v-search-ul'),
 		reset: document.getElementById('v-search-reset'),
 	}
-	this.data = data.features
-	this.electCds = data.features.map(element => {
-		const electCd = element.properties.elect_cd
-		const electArr = electCd.split('|')
-		const disassembled = Hangul.disassemble(`${electArr[1]}${electArr[0]}`, true).reduce(
+	this.data = properties
+	this.analyzed = properties.map(p => {
+		const { cityName, sggName, sggCode } = p
+		const value = `${cityName}${sggName}`
+		const disassembled = Hangul.disassemble(value, true).reduce(
 			(acc, curr) => acc + curr[0],
 			''
 		)
 		return {
-			text: `${electArr[1]}(${electArr[0]})`,
-			value: electCd,
+			text: `${sggName}(${cityName})`,
+			value,
 			disassembled, // 초성검색용 초성
+			sggCode,
 		}
 	})
 
@@ -57,13 +60,13 @@ function buildUl(e) {
 	)
 
 	// 초성이면 초성검색, 그 외는 일반검색
-	const suggestions = this.electCds.filter(n =>
+	const suggestions = this.analyzed.filter(n =>
 		isConsonant ? n.disassembled.includes(disassembled) : n.value.includes(inputValue)
 	)
 	if (suggestions.length > 0) {
 		this.els.ul.classList.add('show')
 		this.els.ul.innerHTML = suggestions
-			.map(li => `<li class="v-search-li" data-cd="${li.value}">${li.text}</li>`)
+			.map(li => `<li class="v-search-li" data-sgg-code="${li.sggCode}">${li.text}</li>`)
 			.join('')
 	} else {
 		resetEl.call(this.els.ul)
@@ -107,9 +110,7 @@ Search.prototype.bindEvent = function(eventName, callback) {
 		this.els.ul.addEventListener('click', e => {
 			if (!e.target.className === 'v-search-li') return
 
-			const filtered = this.data.find(
-				feature => feature.properties.elect_cd === e.target.dataset.cd
-			)
+			const filtered = this.data.find(f => f.sggCode === e.target.dataset.sggCode)
 			// 선택값이 존재하면 callback 실행
 			if (filtered && callback) {
 				callback(filtered)
