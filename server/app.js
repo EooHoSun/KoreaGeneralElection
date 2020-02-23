@@ -36,7 +36,7 @@ app.use((err, req, res, next) => {
 // MongoDB 정의
 const dbUser = process.env.DB_USER || ''
 const dbPw = process.env.DB_PW || ''
-const dbAuth = dbUser && dbPw ? `${dbUser}:${dbPw}@` : ''
+const dbAuth = dbUser && dbPw ? `${dbUser}:${encodeURIComponent(dbPw)}@` : ''
 const client = new MongoClient(`mongodb://${dbAuth}localhost:27017`, { useUnifiedTopology: true })
 client.connect(err => {
 	if (err) {
