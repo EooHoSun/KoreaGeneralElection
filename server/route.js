@@ -100,4 +100,46 @@ router.get('/criminalPdf', async (req, res) => {
 	}
 })
 
+/**
+ * /api/criminalPdf
+ * 선관위 pdf stream을 반환
+ *
+ * @param {String} huboId
+ */
+router.get('/criminalPdf', async (req, res) => {
+	const { huboId, stream } = req.query
+
+	// pdf 주소 가져오기
+	const res1 = await axios.get(
+		'http://info.nec.go.kr/electioninfo/candidate_detail_scanSearchJson.json',
+		{
+			params: {
+				gubun: '5',
+				electionId: '0020200415',
+				huboId,
+				statementId: 'PCRI03_candidate_scanSearch',
+			},
+		}
+	)
+	let pdfPath = 'http://info.nec.go.kr/unielec_pdf_file/'
+	pdfPath += res1.data.jsonResult.body[0].FILEPATH.replace('tif', 'PDF')
+
+	// 스트림이 아니라면 pdf 주소 전달
+	if (!stream) {
+		res.json({
+			url: pdfPath,
+		})
+	} else {
+		// pdf stream 가져오기
+		const { data } = await axios.get(pdfPath, {
+			responseType: 'stream',
+			headers: {
+				Accept: 'application/pdf',
+			},
+		})
+		res.header('Content-Type', 'application/pdf')
+		data.pipe(res)
+	}
+})
+
 module.exports = router
