@@ -3,36 +3,59 @@ const axios = require('axios')
 
 const router = express.Router()
 
-const hjdElect20_5 = require('./data/hjd_elect_20_5.json') // simplify 5%
-const elected20 = require('./data/elected_20.json')
+// const hjdElect20_5 = require('./data/hjd_elect_20_5.json') // simplify 5%
+// const elected20 = require('./data/elected_20.json')
 // const allElectRegPreCandidates = require('./data/candidate_20200220_02_30_ver2.json')
-const allElectRegPreCandidates = require('./data/cadidate_20200221_16_30.json')
+// const allElectRegPreCandidates = require('./data/cadidate_20200221_16_30.json')
 
 /**
  * /api/data
  * 기본 데이터
  */
-router.get('/data', (req, res) => {
+router.get('/data', async (req, res) => {
+	const { db } = req.app.locals
+	// 20대 선거구별 행정동 geojson
+	const hjd20 = await db
+		.collection('hjd')
+		.find({ 'properties.electionCode': '20160413' }, { projection: { _id: 0 } })
+		.toArray()
+	// 21대 선거구별 행정동 geojson
+	const hjd21 = await db
+		.collection('hjd')
+		.find({ 'properties.electionCode': '20200415' }, { projection: { _id: 0 } })
+		.toArray()
+	// 20대 당선인
+	const elected20 = await db
+		.collection('elected')
+		.find({ electionCode: '20160413' }, { projection: { _id: 0 } })
+		.toArray()
+	// 출력
 	res.json({
-		geoJson: hjdElect20_5,
-		elected: elected20,
+		geoJson20: { type: 'FeatureCollection', features: hjd20 },
+		geoJson21: { type: 'FeatureCollection', features: hjd21 },
+		elected20,
 	})
 })
 
 /**
- * /api/preCand
+ * /api/candidate
+ * 21대 (예비)후보자 정보
+ * @param {sggCode} String 선거구코드
  */
-router.get('/preCand', (req, res) => {
-	const sido = req.query.electCd.split('|')[0]
-	const electReg = req.query.electCd.split('|')[1]
+router.get('/candidate', async (req, res) => {
+	const { db } = req.app.locals
+	const { sggCode } = req.query
 
-	if (allElectRegPreCandidates[sido][electReg]) {
-		res.json({
-			candidates: allElectRegPreCandidates[sido][electReg],
-		})
-	} else {
-		res.json({})
-	}
+	// 21대 선거구코드, 데이터생성시간(버전고유코드) 별 (예비)후보자 목록
+	const candidates = await db
+		.collection('candidate')
+		.find({ sggCode, created: '202002211630' }, { projection: { _id: 0 } })
+		.toArray()
+
+	// 출력
+	res.json({
+		candidates,
+	})
 })
 
 /**

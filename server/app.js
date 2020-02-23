@@ -1,6 +1,7 @@
 const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
+const { MongoClient } = require('mongodb')
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -32,5 +33,22 @@ app.use((err, req, res, next) => {
 	res.render('error', { error: err })
 })
 
-const port = 8090
-app.listen(port, () => console.log(`listening on port ${port} : http://localhost:${port}`))
+// MongoDB 정의
+const dbUser = process.env.DB_USER || ''
+const dbPw = process.env.DB_PW || ''
+const dbAuth = dbUser && dbPw ? `${dbUser}:${dbPw}@` : ''
+const client = new MongoClient(`mongodb://${dbAuth}localhost:27017`, { useUnifiedTopology: true })
+client.connect(err => {
+	if (err) {
+		console.error(err.stack)
+		return
+	}
+	console.log('connected to mongodb')
+	// 몽고디비를 app의 글로벌 변수로 연결
+	const db = client.db('kge')
+	app.locals.db = db
+
+	// express app 8090 포트로 기동
+	const port = 8090
+	app.listen(port, () => console.log(`listening on port ${port} : http://localhost:${port}`))
+})

@@ -1,10 +1,10 @@
 import 'leaflet/dist/leaflet.css'
 import axios from 'axios'
+import { parse, format } from 'date-fns'
 import UAParser from 'ua-parser-js'
 import * as L from 'leaflet'
 import 'leaflet-control-custom/Leaflet.Control.Custom'
 import Search from './search'
-// import { createElementFromHTML } from './util'
 
 /**
  * 정당 & 레이어 색상
@@ -219,14 +219,14 @@ async function getPreCandCriminalRecord(huboId) {
  * 21대 총선 예비후보자 정보 출력
  * * VoteMap의 prototype으로 지정할 필요 없을 것 같아서 따로 펑션으로 뺌
  *
- * @param {Node} preDiv
- * @param {String} electCd
+ * @param {Node} preDiv 후보자 정보가 출력되는 node
+ * @param {String} properties 선거구정보
  */
-async function makePreCandidateInfo(preDiv, electCd) {
+async function makePreCandidateInfo(preDiv, properties) {
 	const {
 		data: { candidates },
-	} = await axios.get('/api/preCand', {
-		params: { electCd },
+	} = await axios.get('/api/candidate', {
+		params: { sggCode: properties.sggCode },
 	})
 
 	const toggleBtn = preDiv.querySelector('.v-float-toggle')
@@ -237,38 +237,38 @@ async function makePreCandidateInfo(preDiv, electCd) {
 	preDiv.children.forEach(node => node.classList.remove('hide'))
 
 	// 토글버튼 내용 설정
-	toggleBtnDiv.innerHTML = `<strong>${candidates[0].선거구명}</strong><br/><small>(2020.02.20.20:30기준)</small>`
+	const parsedDate = parse(candidates[0].created, 'yyyyMMddHHmm', new Date())
+	const formatted = format(parsedDate, 'yyyy.MM.dd.HH:mm')
+	toggleBtnDiv.innerHTML = `<strong>${properties.sggName}</strong><br/><small>(${formatted}기준)</small>`
 
 	// content table 작성
 	let html = '<table class="v-pre-tbl"><tbody>'
 	candidates.forEach(candi => {
-		let name = candi['성명']
-		name = name.substr(0, name.indexOf('<br'))
-		let addr = candi['주소']
-		const addrArr = addr.split(' ')
+		let { address } = candi
+		const { name, party, criminal, huboId, gender, age, image, job, education, career } = candi
+		const addrArr = address.split(' ')
 		if (addrArr.length > 2) {
-			addr = `${addrArr[0]} ${addrArr[1]} ${addrArr[2]}`
+			address = `${addrArr[0]} ${addrArr[1]} ${addrArr[2]}`
 		}
-		const jungdang = candi['소속정당']
-		const { color } = PARTY_COLOR.find(x => x.party === jungdang)
-		const criminalClass = candi['전과기록건수'] === '없음' ? 'no-data' : 'has-data'
+		const { color: partyColor } = PARTY_COLOR.find(x => x.party === party)
+		const criminalClass = criminal === '없음' ? 'no-data' : 'has-data'
 		html += '<tr>'
-		html += `<td style="color:${color}">${jungdang}</td>`
+		html += `<td style="color:${partyColor}">${party}</td>`
 		html += `<td><a href="https://search.naver.com/search.naver?query=${name}" target="_blank" title="네이버로 검색하기">${name}</a></td>`
-		html += `<td>${candi['성별']}</td>`
-		html += `<td>${candi['생년월일'].substr(-4, 2)}</td>`
-		html += `<td><span class="v-pre-criminal ${criminalClass}" data-hubo-id="${candi['후보자ID']}">${candi['전과기록건수']}</span></td>`
+		html += `<td>${gender}</td>`
+		html += `<td>${age}</td>`
+		html += `<td><span class="v-pre-criminal ${criminalClass}" data-hubo-id="${huboId}">${criminal}</span></td>`
 		html += `<td><button class="v-pre-unfold"></button></td>`
 		html += '</tr>'
 		html += '<tr class="v-pre-detail-info">'
 		html += '<td colspan="6">'
 		html += '<div>'
-		html += `<img src="${candi['사진']}" />`
+		html += `<img src="${image}" />`
 		html += '<div>'
-		html += `<strong>직업 :</strong> ${candi['직업']}<br />`
-		html += `<strong>학력 :</strong> ${candi['학력']}<br />`
-		html += `<strong>경력 :</strong> ${candi['경력'].split('<br/>').join(', ')}<br />`
-		html += `<strong>주소 :</strong> ${addr}`
+		html += `<strong>직업 :</strong> ${job}<br />`
+		html += `<strong>학력 :</strong> ${education}<br />`
+		html += `<strong>경력 :</strong> ${career.join(', ')}<br />`
+		html += `<strong>주소 :</strong> ${address}`
 		html += '</div>'
 		html += '</div>'
 		html += '</td>'
@@ -307,7 +307,7 @@ VoteMap.prototype._drawElectRegLayer = function() {
 	let clicked = null // 직전 클릭된 레이어
 
 	const preDiv = this.floats.electReg.pre
-	this.layers.electReg = L.geoJSON(this.data.geoJson, {
+	this.layers.electReg = L.geoJSON(this.data.geoJson21, {
 		style: {
 			weight: 1,
 			color: '#892da7',
@@ -323,18 +323,16 @@ VoteMap.prototype._drawElectRegLayer = function() {
 				}
 				clicked = layer
 				layer.setStyle({ fillOpacity: 0.9 })
-				makePreCandidateInfo(preDiv, feature.properties.elect_cd)
+				makePreCandidateInfo(preDiv, feature.properties)
 			})
 		},
 	})
 		.bindTooltip(
 			layer => {
-				const elected = this.data.elected.find(
-					x => x.elect_cd === layer.feature.properties.elect_cd
-				)
-				if (!elected) return '<strong>선거구 없음</strong>'
+				const { sggName } = layer.feature.properties
+				if (!sggName) return '<strong>선거구 없음</strong>'
 				return (
-					`<p><strong>선거구 : </strong>${elected.sungugu}</p>` +
+					`<p><strong>선거구 : </strong>${sggName}</p>` +
 					'<p><small>클릭하면 예비후보자 조회가 가능합니다</small></p>'
 				)
 			},
@@ -356,12 +354,12 @@ VoteMap.prototype._drawElectRegLayer = function() {
  * 20대 선거구 & 결과 그리기
  */
 VoteMap.prototype._drawElect20Layer = function() {
-	const { geoJson, elected } = this.data
+	const { geoJson20, elected20 } = this.data
 
-	this.layers.elect20 = L.geoJSON(geoJson, {
+	this.layers.elect20 = L.geoJSON(geoJson20, {
 		style(feature) {
-			const electedOne = elected.find(x => x.elect_cd === feature.properties.elect_cd)
-			const party = electedOne ? electedOne.party : ''
+			const elected = elected20.find(x => x.sggCode === feature.properties.sggCode)
+			const party = elected ? elected.party : ''
 			return {
 				weight: 1,
 				color: PARTY_COLOR.find(x => x.party === party).color,
@@ -372,14 +370,12 @@ VoteMap.prototype._drawElect20Layer = function() {
 	})
 		.bindTooltip(
 			layer => {
-				const electedOne = elected.find(
-					x => x.elect_cd === layer.feature.properties.elect_cd
-				)
-				if (!electedOne) return '<strong>선거구 없음</strong>'
+				const elected = elected20.find(x => x.sggCode === layer.feature.properties.sggCode)
+				if (!elected) return '<strong>선거구 없음</strong>'
 				return (
-					`<p><strong>선거구 : </strong>${electedOne.sungugu}</p>` +
-					`<p><strong>당선인 : </strong>${electedOne.name}</p>` +
-					`<p><strong>당선당 : </strong>${electedOne.party}</p>`
+					`<p><strong>선거구 : </strong>${elected.sggName}</p>` +
+					`<p><strong>당선인 : </strong>${elected.name}</p>` +
+					`<p><strong>당선당 : </strong>${elected.party}</p>`
 				)
 			},
 			{ opacity: 1, className: 'v-elect-tooltip' }
@@ -399,22 +395,22 @@ VoteMap.prototype._drawElect20Layer = function() {
  * 후보자 검색
  */
 VoteMap.prototype._setSearch = function() {
-	const search = new Search(this.data.geoJson)
+	// TODO: 21대 기준으로 만들었는데, 20대는?
+	const search = new Search(this.data.geoJson21)
 
 	// 검색결과 클릭시 이벤트 콜백으로 전달
 	search.bindEvent('selectGeoJson', geoJson => {
-		const electCd = geoJson.properties.elect_cd
-
+		const { sggCode } = geoJson
 		if (this.map.hasLayer(this.layers.electReg)) {
 			// 21대 총선 정보 레이어가 on 상태라면
 			const layers = this.layers.electReg.getLayers()
-			const layer = layers.find(l => l.feature.properties.elect_cd === electCd)
+			const layer = layers.find(l => l.feature.properties.sggCode === sggCode)
 			this.map.fitBounds(layer.getBounds())
 			layer.fire('click')
 		} else if (this.map.hasLayer(this.layers.elect20)) {
 			// 20대 총선 결과 레이어가 on 상태라면
 			const layers = this.layers.electReg.getLayers()
-			const layer = layers.find(l => l.feature.properties.elect_cd === electCd)
+			const layer = layers.find(l => l.feature.properties.sggCode === sggCode)
 			this.map.fitBounds(layer.getBounds())
 			// TODO: 20대 총선 레이어에서 검색하면 어떻게 처리할 것인가?
 		}
