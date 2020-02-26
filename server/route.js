@@ -100,6 +100,7 @@ router.get('/criminalPdf', async (req, res) => {
 	}
 })
 
+<<<<<<< HEAD
 /**
  * /api/criminalPdf
  * 선관위 pdf stream을 반환
@@ -139,6 +140,22 @@ router.get('/criminalPdf', async (req, res) => {
 		})
 		res.header('Content-Type', 'application/pdf')
 		data.pipe(res)
+=======
+router.get('/preCand', (req, res) => {
+	if (req.query.electCd === 'all') {
+		res.json(allElectRegPreCandidates)
+	} else {
+		const sido = req.query.electCd.split('|')[0]
+		const electReg = req.query.electCd.split('|')[1]
+
+		if (allElectRegPreCandidates[sido][electReg]) {
+			res.json({
+				candidates: allElectRegPreCandidates[sido][electReg],
+			})
+		} else {
+			res.json({})
+		}
+>>>>>>> 98d777b97054f6abc50b524e806cebe7191a9d75
 	}
 })
 
